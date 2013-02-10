@@ -1,0 +1,249 @@
+
+# select user level
+# if level is defined as  > 1 in a a script 
+# before this script is called, the previous value will be used.
+1 _level 2 GROUP 1 MAX _level PUT
+
+# regular dice rolling for a character
+FUN @stat_roll
+    # cast stat as int (to ease grouping)
+    4d6 3 max 0 +
+END FUN
+
+@stat_roll 1 group _attribs PUT
+5
+REPEAT
+    @stat_roll _attribs 2 GROUP _attribs PUT
+END REPEAT
+
+# assign attributes according to order preference
+# this order should be given in the class file
+# ordering starts 1 max roll ... 6 min roll
+_attribs _con_index MAX 1 MIN _con PUT
+_attribs _str_index MAX 1 MIN _str PUT
+_attribs _dex_index MAX 1 MIN _dex PUT
+_attribs _int_index MAX 1 MIN _int PUT
+_attribs _cha_index MAX 1 MIN _cha PUT
+_attribs _wis_index MAX 1 MIN _wis PUT
+
+# add racial traits to attributes
+_con _racial_con + _con PUT
+_str _racial_str + _str PUT
+_dex _racial_dex + _dex PUT
+_int _racial_int + _int PUT
+_cha _racial_cha + _cha PUT
+_wis _racial_wis + _wis PUT
+
+# calculate the modifiers for later use
+FUN @ability_mod
+    _tmp ASSIGN 10 - 2 % 0 2 GROUP 1 MIN
+    _tmp 10 - 2 / +
+END FUN
+_con @ability_mod _con_mod PUT
+_str @ability_mod _str_mod PUT
+_dex @ability_mod _dex_mod PUT
+_wis @ability_mod _wis_mod PUT
+_cha @ability_mod _cha_mod PUT
+_int @ability_mod _int_mod PUT
+
+# number of attribute increases earned by level
+_level 4 / _attrib_increases PUT
+
+# first level gets max hp + con bonus
+_hit_die _con_mod + _hp PUT
+
+# later level hp (ignores con boost from attrib upgrade at later levels)
+_level 1 -
+REPEAT
+    1 _hit_die DICE _con_mod + 1 2 GROUP 1 MAX _hp + _hp PUT
+END REPEAT
+
+# calculate base AC and flat-footed AC
+_dex_mod 10 + _ac PUT
+_dex_mod 0 2 GROUP 1 MIN 10 + _flat_footed_ac PUT
+
+# calculate saves
+# again, these don't take into account the boost from
+# leveled attribute points
+_class_will_saves _level MIN 1 MAX _wis_mod + _will_save PUT
+
+_class_fort_saves _level MIN 1 MAX _con_mod + _fort_save PUT
+
+_class_ref_saves _level MIN 1 MAX _dex_mod + _ref_save ASSIGN
+
+# the number of skill points that can be spent
+# again, fails to count skill points gained from higher INT after attribute inc
+_class_skill _int_mod + 0 2 GROUP 1 MAX _lvl_1_skill_mult * # lvl1 skills
+_class_skill _int_mod + 0 2 GROUP 1 MAX _level 1 - * # skills after lvl1
++ _skill_points PUT
+
+# the number of feats
+_level 3 / 1 + _feats PUT
+_class_feats _level MIN 1 MAX _bonus_class_feats PUT
+
+# BAB Base attack bonus
+_class_bab_first _level MIN 1 MAX _bab_first PUT
+_class_bab_second _level MIN 1 MAX _bab_second PUT
+_class_bab_third _level MIN 1 MAX _bab_third PUT
+_class_bab_fourth _level MIN 1 MAX _bab_fourth PUT
+
+# spells
+_int_mod _wis_mod _cha_mod @bonus_mod _bonus_mod PUT
+_int _wis _cha @bonus_mod _bonus_stat PUT
+# bonus spells PHB P. 8
+1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4 5 17 group _bsp1 put
+0 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4 17 group _bsp2 put
+0 0 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 17 group _bsp3 put
+0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 4 4 17 group _bsp4 put
+0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 4 17 group _bsp5 put
+0 0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 17 group _bsp6 put
+0 0 0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 17 group _bsp7 put
+0 0 0 0 0 0 0 1 1 1 1 2 2 2 2 3 3 17 group _bsp8 put
+0 0 0 0 0 0 0 0 1 1 1 1 2 2 2 2 3 17 group _bsp9 put
+
+_bonus_mod 0 >=
+IF
+    _csp0 _level MIN 1 MAX _bonus_stat 10 < -20 * + _sp0 put
+    _csp1 _level MIN 1 MAX _bonus_stat 11 < -20 * + _sp1 put
+    _csp2 _level MIN 1 MAX _bonus_stat 12 < -20 * + _sp2 put
+    _csp3 _level MIN 1 MAX _bonus_stat 13 < -20 * + _sp3 put
+    _csp4 _level MIN 1 MAX _bonus_stat 14 < -20 * + _sp4 put
+    _csp5 _level MIN 1 MAX _bonus_stat 15 < -20 * + _sp5 put
+    _csp6 _level MIN 1 MAX _bonus_stat 16 < -20 * + _sp6 put
+    _csp7 _level MIN 1 MAX _bonus_stat 17 < -20 * + _sp7 put
+    _csp8 _level MIN 1 MAX _bonus_stat 18 < -20 * + _sp8 put
+    _csp9 _level MIN 1 MAX _bonus_stat 19 < -20 * + _sp9 put
+    
+    _bonus_mod 0 >
+    IF
+        _sp1 _bsp1 _bonus_mod MIN 1 MAX + _sp1 PUT
+        _sp2 _bsp2 _bonus_mod MIN 1 MAX + _sp2 PUT
+        _sp3 _bsp3 _bonus_mod MIN 1 MAX + _sp3 PUT
+        _sp4 _bsp4 _bonus_mod MIN 1 MAX + _sp4 PUT
+        _sp5 _bsp5 _bonus_mod MIN 1 MAX + _sp5 PUT
+        _sp6 _bsp6 _bonus_mod MIN 1 MAX + _sp6 PUT
+        _sp7 _bsp7 _bonus_mod MIN 1 MAX + _sp7 PUT
+        _sp8 _bsp8 _bonus_mod MIN 1 MAX + _sp8 PUT
+        _sp9 _bsp9 _bonus_mod MIN 1 MAX + _sp9 PUT
+    END IF
+END IF
+
+_bonus_mod 0 <
+IF
+    -1 _sp0 put
+    -1 _sp1 put
+    -1 _sp2 put
+    -1 _sp3 put
+    -1 _sp4 put
+    -1 _sp5 put
+    -1 _sp6 put
+    -1 _sp7 put
+    -1 _sp8 put
+    -1 _sp9 put
+END IF
+
+_cksp0 _level MIN 1 MAX _ksp0 PUT
+_cksp1 _level MIN 1 MAX _ksp1 PUT
+_cksp2 _level MIN 1 MAX _ksp2 PUT
+_cksp3 _level MIN 1 MAX _ksp3 PUT
+_cksp4 _level MIN 1 MAX _ksp4 PUT
+_cksp5 _level MIN 1 MAX _ksp5 PUT
+_cksp6 _level MIN 1 MAX _ksp6 PUT
+_cksp7 _level MIN 1 MAX _ksp7 PUT
+_cksp8 _level MIN 1 MAX _ksp8 PUT
+_cksp9 _level MIN 1 MAX _ksp9 PUT
+
+# Display results
+PRINT LEVEL:
+_level .
+PRINT  HP:
+_hp .
+; ;
+
+PRINT STR
+_str . _str_mod .
+PRINT  DEX
+_dex . _dex_mod .
+PRINT  CON
+_con . _con_mod . ;
+PRINT INT
+_int . _int_mod .
+PRINT  WIS
+_wis . _wis_mod .
+PRINT  CHA
+_cha . _cha_mod . 
+; ;
+
+PRINT AC
+_ac .
+PRINT  Flat-footed
+_flat_footed_ac .
+; ;
+
+PRINT Saves: FORT
+_fort_save .
+PRINT  REF
+_ref_save .
+PRINT  WILL
+_will_save .
+; ;
+
+PRINT Init: 
+_dex_mod .
+; ;
+
+PRINT BAB: +
+_bab_first .
+_bab_second 0 >
+IF
+    PRINT / +
+    _bab_second .
+    _bab_third 0 >
+    IF
+        PRINT / +
+        _bab_third .
+        _bab_fourth 0 >
+        IF
+            PRINT / +
+            _bab_fourth .
+        END IF
+    END IF
+END IF
+; ;
+
+PRINT Skill Levels:
+_skill_points . ;
+PRINT Feats:
+_feats . ;
+PRINT Class Feats:
+_bonus_class_feats .
+; ;
+
+FUN @print_spell
+    _val ASSIGN 0 <
+    IF
+        PRINT   -
+    END IF
+    _val 0 >= _val 10 < AND
+    IF
+        PRINT  
+        _val .
+    END IF
+    _val 10 >=
+    IF
+        _val .
+    END IF
+END FUN
+
+PRINT spell lvl:  0  1  2  3  4  5  6  7  8  9
+PRINT
+PRINT spells:   
+_sp0 @print_spell _sp1 @print_spell _sp2 @print_spell
+_sp3 @print_spell _sp4 @print_spell _sp5 @print_spell 
+_sp6 @print_spell _sp7 @print_spell _sp8 @print_spell _sp9 @print_spell ;
+PRINT Known:    
+_ksp0 @print_spell _ksp1 @print_spell _ksp2 @print_spell
+_ksp3 @print_spell _ksp4 @print_spell _ksp5 @print_spell 
+_ksp6 @print_spell _ksp7 @print_spell _ksp8 @print_spell _ksp9 @print_spell ;
+
+

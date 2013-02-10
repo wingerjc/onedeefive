@@ -1,0 +1,5 @@
+fun @BIGGER
+10 *
+end fun
+
+8 _tmp assign clear

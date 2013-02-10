@@ -1,0 +1,154 @@
+\chapter{Introduction: Digital Dice}
+\label{Introduction}
+
+Welcome to the user documentation of 1d5! I certainly happy that you're reading
+this file. Hopefully it means that you think the program has use, or you have
+no clue what it does. If the reason you're perusing this document happens to be
+the latter, look no further! This introduction has been designed to tell you
+what the program does and, more importantly, why you might want to use it.
+
+A note about terminology. There are many terms and acronyms which are commonly
+used in pen and paper RPGs. This manual expects you to know many of them, but
+for those new to the art we provide a glossary at the end of the text.
+
+\section{What is 1D5?}
+\label{whatisit}
+
+\subsection*{\lq\lq That's a funny name\rq\rq }
+\label{programName}
+Before we tell you what the program actually does, I'll take the opportunity
+of having your attention to regale you with the long story about why the
+program is mysteriously named \progLogo. Just kidding! The reason
+is actually fairly simple.
+
+If you've played any pen and paper role playing game (RPG) in the last
+20+ years you know that dice are involved. A lot of them. The most prominently
+used set is currently a set of seven dice with four, six, eight, ten (marked
+0--9), ten (marked 00--90), twelve, and twenty sides (based mostly on the
+Platonic solids, but that's another story). Instead of having to type
+out how many sides each time a dice roll was required,
+game developers decided they could use coin a simple
+shorthand and save some page space. Thus \lq\lq Four eight-sided dice\rq\rq
+became simply 4D8.
+
+\lq\lq But why \progLogo? Isn't that an improbable die roll?\rq\rq My dear
+reader, that is is the point. Just as it is physically improbable for someone
+to manufacture or use a five sided die (it can be simulated with with 1D10)
+the program itself offers you the chance to say \lq\lq Screw Platonic solids!%
+\rq\rq and roll however many of whatever type of dice you want.
+
+\subsection*{The Core Idea}
+\label{coreidea}
+The core concept that shapes the development and use of 1D5 is fairly simple.
+To create a simple Reverse Polish Notation (RPN) scriptable dice rolling
+program. That's it in a nutshell. It rolls as many and whatever type of dice
+you need (even ones that don't exist, see Section~\ref{programName}). You
+can roll 1D8 just as easily as you roll 1000D12.
+
+The first half of the core idea is something about backwards Polish people
+scripting? Almost. The program also allows you to make and save scripts of
+multiple rolls and operations on them that can be used over and over again.
+In fact, one of the first scripts written for \progLogo was to generate
+characters for high fantasy OGL (open gaming license) rule sets. This means
+that you can write scripts to do some pretty cool and complicated stuff.
+Chapter~\ref{writingScripts} has more information on traversing the perils of
+RPN.
+
+\subsection*{What's the Catch?}
+\label{theCatch}
+Well, there's always a catch. I can think of two in this case. First, you have
+to learn how to use the program, which might be difficult if you've never
+written code for a computer before. Second, text output is kind of verbose.
+Sure, if you want to, you can print darn near anything to the screen
+and you can definitely get the values of your rolls to show. Just be warned that
+it might take some typing for that output to be pretty.
+
+There's also a limitation in how numbers are accessed from groups of dice that
+limits what scripts can do. Further development may remove this limitation from
+future releases. See Chapter~\ref{writingScripts} for more information.
+
+\section{Why use 1D5?}
+\label{whyuseit}
+What follows are some pretty shallow justifications for using \progLogo when
+you play RPGs. I hope they can turn you into an avid user or at
+least give you some good bathroom reading.
+
+\subsection*{Speed}
+\label{whyspeed}
+When you need to roll 12D20 and 12D6+2 to figure out how much damage that group
+of 12 goblins did to your party you can save a fair amount of \lq\lq dead
+air\rq\rq
+by having a small script written up ahead of time. It can also help you if
+you're having trouble with a complex game calculation. Write up a script once
+and then just put the parameters it needs on the stack. Nothing simpler!
+
+Another good example of time saved is in rolling up new PCs and NPCs. If
+somebody's character dies halfway through a session and they want a new PC to
+get back in the action, with a few keystrokes you can give them a basic
+character which they can pick feats/spells/skills for and outfit immediately.
+
+
+\subsection*{Flexibility}
+\label{whyflex}
+Since the scripts that are used by \progLogo are just plain text files you can
+e-mail them to friends, edit them, make copies for special conditions, and port
+them to another rules system (if the rule sets are compatible). In fact,
+you can use \progLogo for a heck of a lot more than just rolling dice.
+It might take a lot of work to get a different application to run in \progLogo,
+but it's theoretically possible.
+
+Really though, if you can follow a set of instructions to calculate a number,
+you can most likely write a \progLogo script to calculate that same number. 
+
+\subsection*{Nerdery}
+\label{whynerd}
+It's really, {\it really} nerdy. I mean, how many non-techies know what
+Reverse Polish Notation is? And how many non-gamers have a dice-rolling
+program? Very few my friend, very few.
+
+Now, I know that you might hesitate because there are people out
+there who will assume that because you use such a piece of awesomeness,
+you also do not have a girlfriend and live in your parent's basement (no hard
+feelings if you do). I say, prove them the fools and have fun basking in your
+extended knowledge and moral superiority. Besides, they probably graduated with
+a B.A.\ in Communications (Just kidding, Comm majors are cool too).
+
+\subsection*{But I like My Dice}
+\label{ilikedice}
+This is a hard one for even I to fight. Part of why tabletop gaming is
+awesome is the fact that you get to roll dice. A lot of them. And they can be
+very pretty. And they can start to get personalities and habits, just like
+people. I know these things, that's why I love dice in my games too.
+
+But sometimes you just want to get on with the story, or throw together some
+NPC stat blocks. That's when it's kind of handy to have a program that can
+run hundreds of dice rolls at a time and give you a concise report. I would
+suggest that you still use your dice to resolve the attacks from the BBEM
+but maybe use automated rolls for his anklebiter minions. Whatever works best
+for you and your session is the right answer.
+
+Another problem with real dice is the cost. At time of print the running rate
+for a standard set of gaming dice is at least \$5US with most sets around \$10US
+and the really nice ones even more expensive. So, when somebody forgets their
+dice, or a new player isn't sure which set to buy or if they can afford a set,
+don't feel ashmed to turn to technology. Show them the basics of \progLogo and
+move on with the game.
+
+
+\section{Make 1D5 Better}
+\label{improve}
+\progLogo is an open source utility for any gamer. I/we (currently) make no
+money from producing and documenting it. If you want to add an important script
+to the script library, write an awesome new function, or port the program to a
+new programming language, go ahead. I'm also open to constructive criticism
+and new ideas. Your proposed changes may not be added to the code base for a
+while or at all, but I will try to let you know why.
+
+\section{Conclusion}
+In closing this introduction I feel the urge to do the obligatory thank you
+list. So, here goes. I want to thank all those thatI've gamed with in the
+past who patiently walked me through rules and calculations. I want to thank
+all those who wrote and tested the rule sets that we use to game. Most
+importantly, I want to thank you, the reader and user, for giving this piece
+of software a  chance. I hope you like it and stay out of the dark 
+(you may be eaten by a grue).

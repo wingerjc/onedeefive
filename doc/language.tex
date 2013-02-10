@@ -1,0 +1,358 @@
+
+\chapter{The language}
+\label{language}
+
+\newcommand{\breakline}{\vspace{3mm}\centerline{\rule{12cm}{1pt}}\vspace{3mm}}
+\newcommand{\langExample}[2]{Example: & \texttt{#1}\\Stack Result: & \texttt{#2}}
+\newcommand{\rollExample}[3]{<list:#1 values:#2 $\le$ n $\le$ #3>}
+\newcommand{\listExample}[2]{<list:#1 values:(#2)>}
+\newcommand{\numExample}[2]{<number:#1 $\le$ n $\le$ #2>}
+\newcommand{\constraint}[1]{\textbf{Constraint:} \texttt{#1}}
+\newcommand{\bl}{\\\\}
+\newcommand{\ostack}{<old stack> }
+
+This chapter is intended as a reference section so you can read up on all the
+different features offered by the language that \progLogo understands. I
+wouldn't suggest reading it straight through, as it's pretty boring, but you
+can if you want to.
+
+\section{General Concepts}
+\label{languageConcepts}
+
+\subsection{datatypes}
+\label{datatypes}
+
+\subsection{Output}
+\label{output}
+
+\subsection{variables}
+\label{variables}
+
+\section{Control Structures}
+\label{controlStructures}
+
+\noindent\texttt{
+FUN <function name>\\
+<statements go here>\\
+END FUN\\
+}\indent
+blah
+
+\noindent\texttt{
+IF\\
+<statements go here>\\
+END IF\\
+}\indent
+blah
+
+\noindent\texttt{
+INCLUDE <file name>\\
+}\indent
+blah
+
+\noindent\texttt{
+PRINT <output string>\\
+}\indent
+blah
+
+\noindent\texttt{
+REPEAT\\
+<statements go here>\\
+END REPEAT\\
+}\indent
+blah
+
+
+\section{Built in Functions}
+\label{builtInFunctions}
+\noindent \hangindent=\parindent 
+\texttt{ <x>D<y>}\\
+ Rolls \texttt{ x} number of dice, each with \texttt{ y} sides.\bl
+\constraint{x $\ge$ 0, y $\ge$ 1}\bl
+\begin{tabular}{@{}ll}
+\langExample{ 1D5}{\ostack \rollExample{1}{1}{5}}\bl
+\langExample{ 3D12}{\ostack \rollExample{1}{1}{12}}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ + }\\
+Add the two previous items on the stack. This, and all math operators
+convert lists into a number equal to their sum and operates on that number.\bl
+\begin{tabular}{@{}ll}
+\langExample{ 2 3 +}{\ostack 5}\bl
+\langExample{ 3D6 0 +}{\ostack \numExample{3}{18}}\bl
+\langExample{ \listExample{3}{1, 2, 3} 4 +}{\ostack 10}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ * }\\
+Multiply the two previous items on the stack. This, and all math operators
+convert lists into a number equal to their sum and operates on that number.\bl
+\begin{tabular}{@{}ll}
+\langExample{ 2 5 *}{\ostack 10}\bl
+\langExample{ 8 1D3 *}{\ostack \numExample{8}{24}}\bl
+\langExample{ 3 -5 *}{\ostack -15}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ - }\\
+Subtract the top item on the program stack from the second item on the stack.
+This, and all math operators convert lists into a number equal to their
+sum and operates on that number.\bl
+\begin{tabular}{@{}ll}
+\langExample{ 9 7 -}{\ostack 2}\bl
+\langExample{ 3D8 3 -}{\ostack \numExample{0}{21}}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ / }\\
+Divide the second item on the stack by the first. This division is an integer
+division so the result is always rounded toward 0.
+This, and all math operators convert lists into a number equal to their
+sum and operates on that number.\bl
+\constraint{Cannot divide by 0.}\bl
+\begin{tabular}{@{}ll}
+\langExample{ 15 3 /}{\ostack 5}\bl
+\langExample{ -15 2 /}{\ostack -7}\bl
+\langExample{ 107 10 /}{\ostack 10}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ \% }\\
+Returns the remainder of the second item on the stack divided by the first.
+This, and all math operators convert lists into a number equal to their
+sum and operates on that number.\bl
+\constraint{Cannot divide by 0.}\bl
+\begin{tabular}{@{}ll}
+\langExample{10 3 \%}{\ostack 1}\bl
+\langExample{100 10 \%}{\ostack 0}\bl
+\langExample{-5 2 \%}{\ostack -1}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ < }\\
+Determines if the top item on the stack is greater than the second item on
+the stack.
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+\begin{tabular}{@{}ll}
+\langExample{ 1 3 <}{\ostack 1}\bl
+\langExample{ 3 1 <}{\ostack 0}\bl
+\langExample{ 0 0 <}{\ostack 0}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ > }\\
+Determines if the top item on the stack is less than the second item.
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+\begin{tabular}{@{}ll}
+\langExample{ 7 9 >}{\ostack 0}\bl
+\langExample{ 9 7 >}{\ostack 1}\bl
+\langExample{ 3 3 >}{\ostack 0}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ = }\\
+Determines if the top two items on the stack are equal (have the same number
+value) If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+\begin{tabular}{@{}ll}
+\langExample{ 1 3 =}{\ostack 0}\bl
+\langExample{ 3 1 =}{\ostack 0}\bl
+\langExample{ 5 5 =}{\ostack 1}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ <= }\\
+Determine if the top item on the stack is greater than or equal to the second
+item.
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+\begin{tabular}{@{}ll}
+\langExample{ 5 4 <=}{\ostack 0}\bl
+\langExample{ 4 5 <=}{\ostack 1}\bl
+\langExample{ 8 8 <=}{\ostack 1}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ >= }\\
+Determine if the top item on the stack is less than or equal to the second item.
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+\begin{tabular}{@{}ll}
+\langExample{ 1 9 >=}{\ostack 0}\bl
+\langExample{ 9 1 >=}{\ostack 1}\bl
+\langExample{ 41 41 >=}{\ostack 1}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ != }\\
+Determine if the top two items on the stack do not share the same number value.
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+\begin{tabular}{@{}ll}
+\langExample{1 4 !=}{\ostack 1}\bl
+\langExample{4 1 !=}{\ostack 1}\bl
+\langExample{8 8 !=}{\ostack 0}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ . }\\
+Pop the item at the top of the stack and print it to the output (file/screen).
+See Section~\ref{output} for more information.
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ .e }\\
+Pop the item at the top of the stack and print its explanation to the output
+(file/screen). See Sections~\ref{output} and \ref{datatypes} for more information.
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ ; }\\
+Place a line break/carriage return on the output. See Section~\ref{output} for
+more information.
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ \^{} }\\
+Observe (do NOT pop) the item at the top of the stack and print it to
+the output (file/screen). See Section~\ref{output} for more information.
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ AND }\\
+Compares the two values on the top of the stack. If both are non-zero 1 (true)
+is pushed back onto the stack, otherwise 0 (false) is pushed onto the stack.\bl
+\begin{tabular}{@{}ll}
+\langExample{0 0 AND}{\ostack 0}\bl
+\langExample{0 1 AND}{\ostack 0}\bl
+\langExample{1 0 AND}{\ostack 0}\bl
+\langExample{1 1 AND}{\ostack 1}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ ASSIGN }\\
+Assign the second value on the stack to the variable named at the top stack
+location. This function differs from \texttt{ PUT} in that it places the
+variable value back onto the stack. This difference allows \texttt{ ASSIGN} to
+be used to chain operations (see example below).\bl
+\begin{tabular}{@{}ll}
+\langExample{ 5 \_tmp ASSIGN}{\ostack 5}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ CLEAR }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ DICE }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ DUP }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ GROUP }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ MAX }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ MIN }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ NOT }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ OR }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ POP }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ PUT }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ SIZE }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+\noindent \hangindent=\parindent
+\texttt{ XOR }\\
+\begin{tabular}{@{}ll}
+\end{tabular}
+
+\breakline
+
+
+\section{Console Commands}
+\label{consoleDommands}
+

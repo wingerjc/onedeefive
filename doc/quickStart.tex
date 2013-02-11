@@ -122,25 +122,25 @@ This means that we can chain operations from left to right and still
 understand what's happening. I'll go step-by-step through the
 damage roll for gruff to show you the process.
 \begin{center}
-\begin{tt}
+\begin{texttt}
 1d6 3 + 2 *\\
 3 3 + 2 *\\
 6 2 *\\
 12\\
-\end{tt}
+\end{texttt}
 \end{center}
 What you need to know is that the math operators operate on the last two results
 on the top of the program stack. It's usually safe to make the assumption that
 it's the two values to the left of the operator, but We'll walk through another
 example for a case when that's not true.\\
 \begin{center}
-\begin{tt}
+\begin{texttt}
 5 4 + 6 3 - + 2 /\\
 9 6 3 - + 2 /\\
 9 3 + 2 /\\
 12 2 /\\
 6\\
-\end{tt}
+\end{texttt}
 \end{center}
 In short, work your way from left-to-right and remember that each math operator
 takes exactly two values. When you want to know more, read 
@@ -183,9 +183,9 @@ until we need it again.
 To use a variable it first has to have a name. Valid variable names can contain
 letters, numbers, and the underscore. Variable names must start with a single
 underscore followed by a number or letter. Some examples of proper variable
-names include: \texttt{ \_STRENGTH}, \texttt{ \_bAnAnAs97},
-\texttt{ \_fooball\_chance}, and \texttt{ \_i}. Examples of improper variable names
-include \texttt{ \_\_s\_4}, \texttt{ variable}, and \texttt{ \_my\#var}. 
+names include: \texttt{\_STRENGTH}, \texttt{\_bAnAnAs97},
+\texttt{\_fooball\_chance}, and \texttt{\_i}. Examples of improper variable names
+include \texttt{\_\_s\_4}, \texttt{variable}, and \texttt{\_my\#var}. 
 
 There are two system functions you can use to store a variable:
 \texttt{ ASSIGN}, and \texttt{ PUT}. They both need the same arguments on the

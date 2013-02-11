@@ -2,8 +2,8 @@
 \chapter{The language}
 \label{language}
 
-\newcommand{\breakline}{\vspace{3mm}\centerline{\rule{12cm}{1pt}}\vspace{3mm}}
-\newcommand{\langExample}[2]{Example: & \texttt{#1}\\Stack Result: & \texttt{#2}}
+\newcommand{\breakline}{\vspace{3mm}\centerline{\rule{12cm}{1pt}}\vspace{0mm}}
+\newcommand{\langExample}[2]{Example: &\texttt{#1}\\Stack Result: &\texttt{#2}}
 \newcommand{\rollExample}[3]{<list:#1 values:#2 $\le$ n $\le$ #3>}
 \newcommand{\listExample}[2]{<list:#1 values:(#2)>}
 \newcommand{\numExample}[2]{<number:#1 $\le$ n $\le$ #2>}
@@ -19,120 +19,386 @@ can if you want to.
 \section{General Concepts}
 \label{languageConcepts}
 
-\subsection{datatypes}
+\subsection{Comments and Whitespace}
+\label{comments}
+Comments in the language are written using the \lq\lq\texttt{\#}\rq\rq symbol.
+Each comment spans at most one line and everything after the \texttt{\#} is
+ingored by the interpreter. Function calls or control structures may
+appear on a line before a comment (currently the \texttt{\#} symbol cannot be
+printed because of this). Multi-line comments may be implemented later as
+a separate control structure.
+
+White space within a script does not matter except for in a few special
+situations. This means you can pad lists for readability using tabs and/or spaces.
+You can also use blank lines to separate your script logically into sections.
+The few exceptions to white space ignorance are for the \texttt{PRINT} control
+structure. Read Section~\ref{controlStructures} for information on how
+\texttt{PRINT} handles white space.
+
+\subsection{Data Types}
 \label{datatypes}
+There are two fundamental data types that are used by \progLogo. The first is
+the number or integer. All math operations are done using integer math.
+Integers are assumed to have a value range of \emph{at least}
+-2,147,483,648 to 2,147,483,647 ($-2^{31}$ to $2^{31}-1$, i.e. 32-bit signed
+integers). For most table top games this range should suffice.
+
+The second data type is the list. Lists can nominally have any length. In real
+life the length is dependant upon the platform where \progLogo is run. You can
+generally assume a system can safely handle a list of a million numbers
+without crashing. As you increase list size the time it takes to operate on the
+list also goes up. Assume that lists of at least 1000 numbers are usable in a
+timely manner (probably less than 1 second per function).
+
+Each list can also be treated as a number, and sometimes numbers can be treated
+as lists. When doing math with a list, the list is treated as a number equal to
+the sum of its members. This allows for an easy conversion from lists to numbers
+by adding 0. You may want to convert a list to a number if you're grouping a set
+of dice rolls to select the lowest roll, for example. The \texttt{MIN},
+\texttt{MAX}, \texttt{GROUP}, and \texttt{SIZE} functions all treat numbers as
+a list with length 1. To convert a number to an actual list use \lq\lq%
+\texttt{<number> 1 GROUP}\rq\rq or \lq\lq\texttt{<number> 1 MIN}\rq\rq.
+
+
+\subsection{Variables}
+\label{variables}
+Variables can be either numbers or lists and are assigned using either the
+\texttt{ASSIGN} or \texttt{PUT} functions. Assigned variables will keep the
+data type of the object on the stack that they were assigned from until they
+are assigned a new value (at which point they take that objects data type).
+Variables can be used as a parameter to any function because referencing it
+just places the contained value onto the stack.
+
+If a variable has not had a value assigned to it, then it assumes a number
+value of 0. Variable assignments are not acessible between functions or calls
+of the same function (see Section~\ref{controlStructures} \texttt{FUN/END FUN}),
+but they are available across the \texttt{IF/END IF} and \texttt{REPEAT/%
+END REPEAT} structures.
+
+Variable names must start with an underscore followed by at least one letter
+or number. Every character after the first two may be a letter, number, or
+underscore. Variable names are case sensitive so \texttt{\_VARIABLE} and
+\texttt{\_variable} can each hold a different value.
 
 \subsection{Output}
 \label{output}
+Output by \progLogo is handled in two different ways. First is numeric and
+explanation output which is handled using function calls, and second is
+text output which is produced using the \texttt{PRINT} statement. Functions
+cannot output arbitrary characters and \texttt{PRINT} cannot access stack
+values, but both may print carriage returns/new lines.
 
-\subsection{variables}
-\label{variables}
+\noindent In a nutshell:\\
+\textbf{Functions:}\\
+\texttt{.} --- Print out the top of the stack (period)(removes the item).\\
+\texttt{\^} --- Print out the top of the stack (caret)(leaves the item).\\
+\texttt{.e} --- Print out the explanation for the top of the stack (removes).\\
+\texttt{;} --- Prints a carriage return/new line. (semicolon)
+
+\noindent\textbf{Control structures:}\\
+\texttt{PRINT <text goes here>} --- Print text verbatim without new line\\
+\texttt{PRINT} --- Print a carriage return/new line.
+
+\paragraph*{Value Explanations\\}
+\hspace*{\parindent}%
+The \texttt{.e} function prints out what is called the value explanation.
+Whenever a function is called, an explanation of what variable the value was
+from, or how the functionobtained its result is created and stored with the
+value on the stack. When called, \texttt{.e} prints this stored explanation
+to the current output (screen/file).
+
+\paragraph*{Output Destination\\}
+\hspace*{\parindent}%
+\progLogo can print its output to either a file or to the screen.
+The destination can be chosen when you start \progLogo from the command line.
+See Section~\ref{commandLineOptions} for more information.
+
+\subsection{Capitalization and Script Style}
+\label{codingStyle}
+At heart, \progLogo is actually its own interpreted programming language that
+is focused on rolling dice. With the power programming provides comes also
+the responsibility of creating readable and uunderstandable code. While there
+are many naming 
 
 \section{Control Structures}
 \label{controlStructures}
+Control structures are why \progLogo is more interesting than other
+dice rolling programs out there. They allow you to conditionally or repeatedly
+run sequences of code, define user functions, create text output, and include
+external script files.
 
-\noindent\texttt{
+Control structures cannot be placed on a line that contains regular function
+calls. When the structure formats below state something must be on its own line,
+it must be. The formats for special arguments denoted by the \texttt{<>} symbols
+are described in the text below that structure.
+
+\noindent\texttt{%
 FUN <function name>\\
-<statements go here>\\
-END FUN\\
-}\indent
-blah
+<statements go here, as many lines as you want>\\
+END FUN}
 
-\noindent\texttt{
+This control structure creates or overrides a user function definition. Any
+non-console commands are allowed inside the function body, including calls to
+other functions or itself.
+
+\paragraph*{Naming\\}
+\hspace*{\parindent}User function names must start with an \texttt{@} symbol
+followed by at least
+one character, number or underscore. Function names can only consist of
+characters, numbers, and underscores. Function names are also case sensitive.
+So \texttt{@BarbarianDamage} and \texttt{@BaRbArIaNDaMaGe} refer to two
+different functions. Attempting to call a function that does not exists is an
+error, but \progLogo  will continue to parse the line it is on.
+
+Defining a new function with the same nameas an older function overwrites the
+old function. You should be careful not to overwrite functions critical to
+your script. If you want to be extremely tricky though, you can use this
+feature to conditionally define functions (just put the function definitions
+in separate\texttt{IF} blocks).
+
+\noindent%
+Examples of valid function names (note: not all of these are good names for
+your functions)\\
+\texttt{@f1 \ \ \  @12times3 \ \ \  @foo\_bar\_baz \ \ \ @1 \ \ \ %
+@\_\_OH\_YEAH\_BABY\_\_}
+
+\paragraph*{Scope\\}
+\hspace*{\parindent}The function can access the stack and any value placed on
+it. It may also
+add as many items as it wants to the top of the stack. The function
+can NOT access any variables created or defined outside of itself. In addition,
+any variables that are defined or assigned to within the function body are not
+accessible across function calls to the same function
+(this includes a function called from itself or successive calls to the
+same function), or to the calling environmnent.
+
+For example, suppose function \texttt{@Main} calls function \texttt{@Hitpoints}
+twice, and \texttt{@Hitpoints} uses variable \texttt{\_maxHP}. The value
+assigned to \texttt{\_maxHP} during the first function call cannot be accessed
+from \texttt{@Main} or the second call to \texttt{@Hitpoints}.
+References to \texttt{\_maxHP} would return 0 in \texttt{@Main} unless
+previously defined there (see Section~\ref{variables} for more information).
+
+In short, the ONLY way to pass data into or out of a function is on the program
+stack. Period.
+
+\breakline
+
+\noindent\texttt{%
 IF\\
-<statements go here>\\
-END IF\\
-}\indent
-blah
+<statements go here, as many lines as you want>\\
+END IF}
 
-\noindent\texttt{
-INCLUDE <file name>\\
-}\indent
-blah
+This structure consumes the top item on the stack. If the item evaluates to the
+number 0 it is assumed to be false and the body of the statement is not run.
+For any value that is NOT 0, the condition is assumed to be true and the body
+of the statement is run. Any non-console strucutre or function may appear
+inside of an \texttt{IF} statement's body.
 
-\noindent\texttt{
-PRINT <output string>\\
-}\indent
-blah
+All functions and variables that have been defined in the script that an
+\texttt{IF} block resides are also accessible inside the body of the statement.
+All functions and variables defined and assinged inside an \texttt{IF} block
+are also available to the script that surrounds the statement.
 
-\noindent\texttt{
+\breakline
+
+\noindent\texttt{%
+INCLUDE <file name>}
+
+Include an external file. The file name can be absolute or relative, but
+should not include any spaces. In writing out directories separate them with a
+forward slash (/) as in *nix style file systems. File names are case sensitive
+if the operating system has a case sensitive naming scheme (*nix does, win32
+does not). The suggested file extension for script files is
+\lq\lq\texttt{.die}\rq\rq.
+
+Included files are run as a script and can define and use variables that are
+accessible to the script that called them (as opposed to functions which
+cannot do this). Included scripts also have full access to the program stack.
+In essence, an included script is the equivalent to copying the text from the
+referenced file and pasting it in the script where the include line rests.
+
+\noindent Examples of valid file names:\\
+\texttt{%
+/home/alice/1d5/goblinKingDamage.die \ \ \ c:/1d5/class/barbarian.die
+}
+
+\breakline
+
+\noindent\texttt{%
+PRINT <output string>}
+
+Print can do two things. First, if passed an output string it will print that
+line to the output location (screen/file) unedited. This includes any leading
+or trailing spaces except the required space directly after \texttt{PRINT}. No
+carriage return/new line is produced when a string is output.
+The second case is when no input is passed to the statement. In this case the
+program just outputs a carriage return/new line.
+
+The purpose of the two print \lq\lq modes\rq\rq is to allow for interleaving of
+numeric values with text. See Section~\ref{output} for more information and
+examples.
+
+\noindent Examples:\\
+A trailing \lq\lq$\ast$\rq\rq is included to show the cursor location.\\
+A trailing \lq\lq$\backslash$n\rq\rq is included to show the end of print lines.
+
+\noindent Script:\\
+\texttt{%
+PRINT Twas brillig and the slithy toves, $\backslash$n
+}
+
+\noindent Output:\\
+\texttt{%
+Twas brillig and the slithy toves, $\ast$
+}
+
+\noindent Script:\\
+\texttt{%
+PRINT Line one.$\backslash$n\\
+PRINT Line two?$\backslash$n\\
+PRINT$\backslash$n\\
+PRINT Actual line two.$\backslash$n\\
+PRINT
+}
+
+\noindent Output:\\
+\texttt{%
+Line one.Line two?\\
+Actual line two.\\
+$\ast$
+}
+
+\breakline
+
+\noindent\texttt{%
 REPEAT\\
-<statements go here>\\
+<statements go here, as many lines as you want>\\
+END REPEAT}
+
+This structure removes and evaluates the top item on the stack. If the number
+is greater than zero, the code in the body of the structure is executed exactly
+that number of times. The number is evaluated once at the start of the loop
+and the number of repetitions fixed at that time.
+
+All non-console functions and structures may be used inside the body of the
+\texttt{REPEAT} statement. As with the \texttt{IF} statement, variables and
+function definitions share scope with script where the \texttt{REPEAT}
+resides.
+
+\noindent Example:\\
+\texttt{%
+0 10 \\
+REPEAT \\
+1 +\\
 END REPEAT\\
-}\indent
-blah
+. ;}
 
+Ouptut:\\
+\texttt{%
+10
+}
 
-\section{Built in Functions}
+\section{Built-in Functions}
 \label{builtInFunctions}
+The functions below are listed in almost alphabetical order. All functions that
+do not have a letter as their initial character are listed first and organized
+by group (math, comparison, etc.). Each listing includes an example. Examples
+contain a number of conventions for specifying what remains on the program stack
+after the example code has competed.
+
+\noindent\texttt{\ostack} --- The stack value before the example\\
+\texttt{<empty stack>} --- An empty program stack (everything before the example
+code was removed)\\
+\texttt{\listExample{a}{b}} --- A list with size \texttt{a} and values
+\texttt{b} held in the specified order.\\
+\texttt{\rollExample{a}{b}{c}} --- A list with items of unknown value. The size,
+and limits for individual die values are given.\\
+\texttt{\numExample{a}{b}} --- A number with unknown value. Minimum and 
+maximum values are given.
+
+\breakline
+
 \noindent \hangindent=\parindent 
-\texttt{ <x>D<y>}\\
- Rolls \texttt{ x} number of dice, each with \texttt{ y} sides.\bl
-\constraint{x $\ge$ 0, y $\ge$ 1}\bl
+\texttt{<x>D<y>}\\
+Rolls \texttt{x} number of dice, each with \texttt{y} sides.
+ 
+\constraint{x $\ge$ 1, y $\ge$ 1}
+
+\hangindent=\parindent
 \begin{tabular}{@{}ll}
-\langExample{ 1D5}{\ostack \rollExample{1}{1}{5}}\bl
-\langExample{ 3D12}{\ostack \rollExample{1}{1}{12}}
+\langExample{1D5}{\ostack \rollExample{1}{1}{5}}\bl
+\langExample{3D12}{\ostack \rollExample{3}{1}{12}}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ + }\\
+\texttt{+}\\
 Add the two previous items on the stack. This, and all math operators
-convert lists into a number equal to their sum and operates on that number.\bl
+convert lists into a number equal to their sum and operate on that number.
+
 \begin{tabular}{@{}ll}
-\langExample{ 2 3 +}{\ostack 5}\bl
-\langExample{ 3D6 0 +}{\ostack \numExample{3}{18}}\bl
-\langExample{ \listExample{3}{1, 2, 3} 4 +}{\ostack 10}
+\langExample{2 3 +}{\ostack 5}\bl
+\langExample{3D6 0 +}{\ostack \numExample{3}{18}}\bl
+\langExample{\listExample{3}{1, 2, 3} 4 +}{\ostack 10}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ * }\\
+\texttt{*}\\
 Multiply the two previous items on the stack. This, and all math operators
-convert lists into a number equal to their sum and operates on that number.\bl
+convert lists into a number equal to their sum and operate on that number.
+
 \begin{tabular}{@{}ll}
-\langExample{ 2 5 *}{\ostack 10}\bl
-\langExample{ 8 1D3 *}{\ostack \numExample{8}{24}}\bl
-\langExample{ 3 -5 *}{\ostack -15}
+\langExample{2 5 *}{\ostack 10}\bl
+\langExample{8 1D3 *}{\ostack \numExample{8}{24}}\bl
+\langExample{3 -5 *}{\ostack -15}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ - }\\
+\texttt{-}\\
 Subtract the top item on the program stack from the second item on the stack.
 This, and all math operators convert lists into a number equal to their
-sum and operates on that number.\bl
+sum and operate on that number.
+
 \begin{tabular}{@{}ll}
-\langExample{ 9 7 -}{\ostack 2}\bl
-\langExample{ 3D8 3 -}{\ostack \numExample{0}{21}}
+\langExample{9 7 -}{\ostack 2}\bl
+\langExample{3D8 3 -}{\ostack \numExample{0}{21}}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ / }\\
+\texttt{/}\\
 Divide the second item on the stack by the first. This division is an integer
 division so the result is always rounded toward 0.
 This, and all math operators convert lists into a number equal to their
-sum and operates on that number.\bl
-\constraint{Cannot divide by 0.}\bl
+sum and operate on that number.
+
+\hangindent=\parindent
+\constraint{Cannot divide by 0.}
+
 \begin{tabular}{@{}ll}
-\langExample{ 15 3 /}{\ostack 5}\bl
-\langExample{ -15 2 /}{\ostack -7}\bl
-\langExample{ 107 10 /}{\ostack 10}
+\langExample{15 3 /}{\ostack 5}\bl
+\langExample{-15 2 /}{\ostack -7}\bl
+\langExample{107 10 /}{\ostack 10}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ \% }\\
+\texttt{\%}\\
 Returns the remainder of the second item on the stack divided by the first.
 This, and all math operators convert lists into a number equal to their
-sum and operates on that number.\bl
-\constraint{Cannot divide by 0.}\bl
+sum and operate on that number.
+
+\hangindent=\parindent
+\constraint{Cannot divide by 0.}
+
 \begin{tabular}{@{}ll}
 \langExample{10 3 \%}{\ostack 1}\bl
 \langExample{100 10 \%}{\ostack 0}\bl
@@ -142,71 +408,77 @@ sum and operates on that number.\bl
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ < }\\
+\texttt{<}\\
 Determines if the top item on the stack is greater than the second item on
 the stack.
-If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.
+
 \begin{tabular}{@{}ll}
-\langExample{ 1 3 <}{\ostack 1}\bl
-\langExample{ 3 1 <}{\ostack 0}\bl
-\langExample{ 0 0 <}{\ostack 0}
+\langExample{1 3 <}{\ostack 1}\bl
+\langExample{3 1 <}{\ostack 0}\bl
+\langExample{0 0 <}{\ostack 0}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ > }\\
+\texttt{>}\\
 Determines if the top item on the stack is less than the second item.
-If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.
+
 \begin{tabular}{@{}ll}
-\langExample{ 7 9 >}{\ostack 0}\bl
-\langExample{ 9 7 >}{\ostack 1}\bl
-\langExample{ 3 3 >}{\ostack 0}
+\langExample{7 9 >}{\ostack 0}\bl
+\langExample{9 7 >}{\ostack 1}\bl
+\langExample{3 3 >}{\ostack 0}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ = }\\
+\texttt{=}\\
 Determines if the top two items on the stack are equal (have the same number
-value) If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+value) If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.
+
 \begin{tabular}{@{}ll}
-\langExample{ 1 3 =}{\ostack 0}\bl
-\langExample{ 3 1 =}{\ostack 0}\bl
-\langExample{ 5 5 =}{\ostack 1}
+\langExample{1 3 =}{\ostack 0}\bl
+\langExample{3 1 =}{\ostack 0}\bl
+\langExample{5 5 =}{\ostack 1}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ <= }\\
+\texttt{<=}\\
 Determine if the top item on the stack is greater than or equal to the second
 item.
-If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.
+
 \begin{tabular}{@{}ll}
-\langExample{ 5 4 <=}{\ostack 0}\bl
-\langExample{ 4 5 <=}{\ostack 1}\bl
-\langExample{ 8 8 <=}{\ostack 1}
+\langExample{5 4 <=}{\ostack 0}\bl
+\langExample{4 5 <=}{\ostack 1}\bl
+\langExample{8 8 <=}{\ostack 1}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ >= }\\
+\texttt{>=}\\
 Determine if the top item on the stack is less than or equal to the second item.
-If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.
+
 \begin{tabular}{@{}ll}
-\langExample{ 1 9 >=}{\ostack 0}\bl
-\langExample{ 9 1 >=}{\ostack 1}\bl
-\langExample{ 41 41 >=}{\ostack 1}
+\langExample{1 9 >=}{\ostack 0}\bl
+\langExample{9 1 >=}{\ostack 1}\bl
+\langExample{41 41 >=}{\ostack 1}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ != }\\
+\texttt{!=}\\
 Determine if the top two items on the stack do not share the same number value.
-If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
+If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.
+
 \begin{tabular}{@{}ll}
 \langExample{1 4 !=}{\ostack 1}\bl
 \langExample{4 1 !=}{\ostack 1}\bl
@@ -216,37 +488,39 @@ If so, 1 (true) is pushed on the stack, otherwise 0 (false) is pushed.\bl
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ . }\\
+\texttt{.}\\
 Pop the item at the top of the stack and print it to the output (file/screen).
 See Section~\ref{output} for more information.
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ .e }\\
-Pop the item at the top of the stack and print its explanation to the output
+\texttt{.e}\\
+Pop the item at the top of the stack and print its explanation to the output\\
 (file/screen). See Sections~\ref{output} and \ref{datatypes} for more information.
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ ; }\\
+\texttt{;}\\
 Place a line break/carriage return on the output. See Section~\ref{output} for
 more information.
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ \^{} }\\
+\texttt{\^{}}\\
+This function is the caret character (Shift+6 on US keyboard layout).
 Observe (do NOT pop) the item at the top of the stack and print it to
 the output (file/screen). See Section~\ref{output} for more information.
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ AND }\\
+\texttt{AND}\\
 Compares the two values on the top of the stack. If both are non-zero 1 (true)
-is pushed back onto the stack, otherwise 0 (false) is pushed onto the stack.\bl
+is pushed back onto the stack, otherwise 0 (false) is pushed onto the stack.
+
 \begin{tabular}{@{}ll}
 \langExample{0 0 AND}{\ostack 0}\bl
 \langExample{0 1 AND}{\ostack 0}\bl
@@ -257,102 +531,230 @@ is pushed back onto the stack, otherwise 0 (false) is pushed onto the stack.\bl
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ ASSIGN }\\
+\texttt{ASSIGN}\\
 Assign the second value on the stack to the variable named at the top stack
-location. This function differs from \texttt{ PUT} in that it places the
-variable value back onto the stack. This difference allows \texttt{ ASSIGN} to
-be used to chain operations (see example below).\bl
+location. This function differs from \texttt{PUT} in that it places the
+variable value back onto the stack. This difference allows \texttt{ASSIGN} to
+be used to chain operations (see example below).
+
 \begin{tabular}{@{}ll}
-\langExample{ 5 \_tmp ASSIGN}{\ostack 5}
+\langExample{5 \_tmp ASSIGN}{\ostack 5}\bl
+\langExample{1 2 2 GROUP \_list1 ASSIGN 1 MIN}{\ostack \listExample{1}{1}}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ CLEAR }\\
+\texttt{CLEAR}\\
+Completely empty the program stack. This just removes anything on the stack.
+Don't forget that there is no undo.
+
 \begin{tabular}{@{}ll}
+\langExample{1 2 3 4 5 6 CLEAR}{<empty stack>}
+\end{tabular}
+
+\breakline
+
+\noindent\hangindent=\parindent
+\texttt{DICE}\\
+Similar to \texttt{<x>D<y>} except this function takes two arguments off the
+stack, therefore you can use variables and other functions as input.
+It also allows the value of \texttt{x} to be 0. The top value
+on the stack is used as the number of sides each die has. The second item on
+the stack is the number of dice to roll.
+
+\constraint{x $\ge$ 0, y $\ge$ 1}
+
+\begin{tabular}{@{}ll}
+\langExample{0 5 DICE}{\ostack \listExample{1}{0}}\bl
+\langExample{8 1 DICE}{\ostack \rollExample{8}{1}{1}}\bl
+\langExample{2 6 DICE}{\ostack \rollExample{2}{1}{6}}\bl
+\langExample{5 \_tmp PUT 2 \_tmp DICE}{\ostack \rollExample{2}{1}{5}}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ DICE }\\
+\texttt{DUP}\\
+Duplicates the top of the stack and places it back on top of the stack.
+
 \begin{tabular}{@{}ll}
+\langExample{5 DUP}{\ostack 5 5}\bl
+\langExample{1 3 2 GROUP DUP}{\ostack \listExample{2}{3, 1}
+             \listExample{2}{3, 1}}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ DUP }\\
+\texttt{GROUP}\\
+Create a list of items from the stack. The top item of the stack is used to
+tell how many stack items to consume to make the group. The order of the items
+is equal to that of their depth on the stack. If an item on the stack is itself
+a list, its internal order is preserved and all its items are added to the
+new list. If the number of items to be grouped is less than one, a new list with
+only the value 0 is made.
+
 \begin{tabular}{@{}ll}
+\langExample{1 2 3 3 GROUP}{\ostack \listExample{3}{3, 2, 1}}\bl
+\langExample{9 8 7 3 GROUP}{\ostack \listExample{3}{7, 8, 9}}\bl
+\langExample{1 2 3 3 GROUP 4 5 6 3 GROUP 2 GROUP}{\ostack
+             \listExample{6}{6, 5, 4, 3, 2, 1}}\bl
+\langExample{1 2 0 GROUP}{\ostack 1 2 \listExample{1}{0}}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ GROUP }\\
+\texttt{MAX}\\
+Create a list with at most \texttt{n} maximum items from a list on the stack. The
+first item on the stack is used to provide an upper bound for the size of the
+new list. The second item on the stack should be the list to choose the values
+from. If the number of items to select is less than one, a new list with just
+the value 0 will be placed on the stack. If a number is provided instead of
+a list and the upper bound is greater than 0, a new list with the number is
+placed on the stack. Items in the new list are ordered from high to low.
+
 \begin{tabular}{@{}ll}
+\langExample{3 2 1 3 GROUP 2 MAX}{\ostack \listExample{2}{3, 2}}\bl
+\langExample{3 2 1 3 GROUP 5 MAX}{\ostack \listExample{3}{3, 2, 1}}\bl
+\langExample{7 1 MAX}{\ostack \listExample{1}{7}}\bl
+\langExample{1 2 3 3 GROUP -1 MAX}{\ostack \listExample{3}{3, 2, 1}
+             \listExample{1}{0}}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ MAX }\\
+\texttt{MIN}\\
+Create a list with at most \texttt{n} minimum items from a list on the stack. The
+first item on the stack is used to provide an upper bound for the size of the
+new list. The second item on the stack should be the list to choose the values
+from. If the number of items to select is less than one, a new list with just
+the value 0 will be placed on the stack. If a number is provided instead of
+a list and the upper bound is greater than 0, a new list with the number is
+placed on the stack. Items in the new list are ordered from low to high.
+
 \begin{tabular}{@{}ll}
+\langExample{3 2 1 3 GROUP 2 MIN}{\ostack \listExample{2}{1, 2}}\bl
+\langExample{3 2 1 3 GROUP 5 MIN}{\ostack \listExample{3}{1, 2, 3}}\bl
+\langExample{7 1 MIN}{\ostack \listExample{1}{7}}\bl
+\langExample{1 2 3 3 GROUP -1 MIN}{\ostack \listExample{3}{3, 2, 1}
+             \listExample{1}{0}}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ MIN }\\
+\texttt{NOT}\\
+Removes and examines the top of the stack as a number. If it is 0, 1 (true)
+is pushed on the top of the stack. Otherwise 0 (false) is pushed onto the
+stack.
+
 \begin{tabular}{@{}ll}
+\langExample{5 NOT}{\ostack 0}\bl
+\langExample{-1 NOT}{\ostack 0}\bl
+\langExample{1 NOT}{\ostack 0}\bl
+\langExample{0 NOT}{\ostack 1}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ NOT }\\
+\texttt{OR}\\
+Removes and compares the top two items on the stack, if either of them is
+a non-zero value, then 1 (true) is pushed onto the stack. Otherwise 0 (false)
+is placed on the stack.
+
 \begin{tabular}{@{}ll}
+\langExample{0 0 OR}{\ostack 0}\bl
+\langExample{0 1 OR}{\ostack 1}\bl
+\langExample{1 0 OR}{\ostack 1}\bl
+\langExample{1 1 OR}{\ostack 1}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ OR }\\
+\texttt{POP}\\
+Remove the top item from the stack and discard it.
+
 \begin{tabular}{@{}ll}
+\langExample{1 2 3 4 5 POP}{\ostack 1 2 3 4}\bl
+\langExample{5 \_tmp ASSIGN POP}{\ostack}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ POP }\\
+\texttt{PUT}\\
+Place the second item on the stack into the variable that is the named at the
+top of the stack. Similar to \texttt{ASSIGN}, but \texttt{PUT} does not place
+the value back onto the stack. (\texttt{PUT} is equivalen to
+\texttt{ASSIGN POP}).
+
 \begin{tabular}{@{}ll}
+\langExample{5 \_tmp PUT}{\ostack}\bl
+\langExample{1 2 3 3 GROUP \_tmp2 PUT}{\ostack}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ PUT }\\
+\texttt{SIZE}\\
+Removes and examines the top item on the stack and pushes its size to the stack.
+Numbers are size 1 and lists have a size equal to their length.
+
 \begin{tabular}{@{}ll}
+\langExample{100 SIZE}{\ostack 1}\bl
+\langExample{1 2 3 3 GROUP SIZE}{\ostack 3}
 \end{tabular}
 
 \breakline
 
 \noindent \hangindent=\parindent
-\texttt{ SIZE }\\
+\texttt{XOR}\\
+Removes and examines the top two items on the stack. If exactly one of them
+is non-zero then 1 (true) is pushed on the stack. Otherwise, 0 (false) is
+placed on the stack.
+
 \begin{tabular}{@{}ll}
+\langExample{0 0 XOR}{\ostack 0}\bl
+\langExample{0 1 XOR}{\ostack 1}\bl
+\langExample{1 0 XOR}{\ostack 1}\bl
+\langExample{1 1 XOR}{\ostack 0}
 \end{tabular}
-
-\breakline
-
-\noindent \hangindent=\parindent
-\texttt{ XOR }\\
-\begin{tabular}{@{}ll}
-\end{tabular}
-
-\breakline
-
 
 \section{Console Commands}
-\label{consoleDommands}
+\label{consoleCommands}
+
+\section{Command Line Options}
+\label{commandLineOptions}
+
+\noindent\hangindent=\parindent
+\texttt{%
+-i <file name>
+}\\
+Use the selected script file as the input script for \progLogo. If the file
+cannot be opened, the program will state this and exit. If this option is
+not used, input is taken from \texttt{stdin} and console commands are
+available.
+
+\breakline
+
+\noindent\hangindent=\parindent
+\texttt{%
+-o <file name>
+}\\
+Print all output statements to the given text file. If the file cannot be
+opened, the program will state this and exit. If this option is not specified
+all output is printed to \texttt{stdout}.
+
+\breakline
+
+\noindent\hangindent=\parindent
+\texttt{%
+--help
+}\\
+Print out a help message that lists the command line options for \progLogo.
 

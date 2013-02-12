@@ -29,7 +29,7 @@ interprets them. The systemrolls dice and does math, then prints the result to
 the screen when asked. That's the life of a console.
 
 If you want to leave the console and close \progLogo, all you need to do is
-type the word \texttt{ exit} on its own line press enter. The program should close.
+type the word \texttt{exit} on its own line press enter. The program should close.
 It doesn't matter if you type it in UPPER or lower case, both will work.
 
 \section{A Dice Roll}
@@ -38,21 +38,21 @@ Now it's time to get you to make your first dice roll. Don't be nervous, all
 you have to do is type in the roll in the standard roll format common to most
 RPG games. Lets play a round of bomb-out which requires 6 six-sided dice.
 Type out:\\
-\indent\texttt{ 6D6 .e ;}\\
+\indent\texttt{6D6 .e ;}\\
 You should get back a line that looks like:\\
-\indent\texttt{ 6D6 (1, 3, 5, 5, 4, 3): 21}\\
+\indent\texttt{6D6 (1, 3, 5, 5, 4, 3): 21}\\
 There it is! now you know how to roll as many of whatever dice you want.
 
 Let's tear this line apart to see what we're actually doing. First we have
-the obvious dice roll \texttt{ 6D6}. This rolls the dice and stores the result
+the obvious dice roll \texttt{6D6}. This rolls the dice and stores the result
 on the program stack (See Section~\ref{polishNotation} for a description of
 the program stack). The syntax doesn't change between rolls. The only 
 requirements are that the number of sides must be more than 1
 and the number of dice must
-be more that 0. So, you can easily roll \texttt{ 3d4} or \texttt{ 20d10} or even
-\texttt{ 1000d2}, but \texttt{ 0d8} and \texttt{ 5d0} are not allowed.
+be more that 0. So, you can easily roll \texttt{3d4} or \texttt{20d10} or even
+\texttt{1000d2}, but \texttt{0d8} and \texttt{5d0} are not allowed.
 
-The next command \texttt{ .e}
+The next command \texttt{.e}
 tells the console to print out the top item on the stack (our roll)
 and explain it. Each function has an explanation of how it reached the answer.
 If we really didn't care what the individual dice rolls were and just wanted
@@ -72,9 +72,9 @@ make it do. You can, with very few exceptions, always put more than one
 space between two items on a line, but there should be at least one space
 anywhere there is a space in an example.
 
-Capitalization is also mostly typist's choice. Typing \texttt{ 1D4} and \texttt{ 1d4}
+Capitalization is also mostly typist's choice. Typing \texttt{1D4} and \texttt{1d4}
 will both roll one four sided die. Also when system functions are introduced
-\texttt{ DICE}, \texttt{ dice}, and \texttt{ DicE} all will call the same function.
+\texttt{DICE}, \texttt{dice}, and \texttt{DicE} all will call the same function.
 The exception here is when script functions and variables are used.
 These concepts will be discussed in more depth later.
 
@@ -85,20 +85,20 @@ do a little bit of math. Lets start things off with a fun example. The barbarian
 Gruff is fighting an orge with an AC of 20. This means he needs to roll
 1D20 and then add 4 to that result. If it's over 20, he hits and does damage to
 the ogre. To do the calculation and print the value we type:\\
-\indent\texttt{ 1d20 4 + . ;}\\
+\indent\texttt{1d20 4 + . ;}\\
 and the result gets printed:\\
 \indent\texttt{24}\\
 This is really good news for Gruff. First, it means that our script worked.
 Second, it means that he hit the ogre. now he needs to run the same script and
 if it's over 20 again he does critical damage. the result of the second run
 is:\\
-\indent\texttt{ 21}\\
+\indent\texttt{21}\\
 YAY! The crit confirmed. that means when Gruff would normally do 1D6+2 damage,
 he now does twice as much damage. Let's write another script to calculate the
 damage:\\
-\indent\texttt{ 1d6 3 + 2 * . ;}\\
+\indent\texttt{1d6 3 + 2 * . ;}\\
 and the result printed back\\
-\indent\texttt{ 12}\\
+\indent\texttt{12}\\
 Let's leave Gruff to his sword whacking and see what we're doing.
 
 \section{A First Brush With RPN}
@@ -106,16 +106,16 @@ Let's leave Gruff to his sword whacking and see what we're doing.
 While I'm saving the meat of fully explaining what RPN means for a longer
 description later, you need to know a little bit to figure out what just
 happened. To start all math done in RPN has the operator AFTER the two
-operands, not in between. Here are some examples to wrap your brain around:\\
+operands, not in between. Here are some examples to wrap your brain around:
 \begin{tabbing}
-\texttt{ 200 500 +} \ \ \= $\longrightarrow$ \ \ \= 700\\
-\texttt{ 9 5 +} \> $\longrightarrow$ \> 14\\
-\texttt{ 5 2 -} \> $\longrightarrow$ \> 3\\
-\texttt{ 10 20 -} \> $\longrightarrow$ \> -10\\
-\texttt{ 2 3 *} \> $\longrightarrow$ \> 6\\
-\texttt{ 4 4 *} \> $\longrightarrow$ \> 16\\
-\texttt{ 8 4 /} \> $\longrightarrow$ \> 2\\
-\texttt{ 100 10 /} \> $\longrightarrow$ \> 10\\
+\texttt{200 500 +} \ \ \= $\longrightarrow$ \ \ \= 700\\
+\texttt{9 5 +} \> $\longrightarrow$ \> 14\\
+\texttt{5 2 -} \> $\longrightarrow$ \> 3\\
+\texttt{10 20 -} \> $\longrightarrow$ \> -10\\
+\texttt{2 3 *} \> $\longrightarrow$ \> 6\\
+\texttt{4 4 *} \> $\longrightarrow$ \> 16\\
+\texttt{8 4 /} \> $\longrightarrow$ \> 2\\
+\texttt{100 10 /} \> $\longrightarrow$ \> 10
 \end{tabbing}
 
 This means that we can chain operations from left to right and still
@@ -132,7 +132,7 @@ damage roll for gruff to show you the process.
 What you need to know is that the math operators operate on the last two results
 on the top of the program stack. It's usually safe to make the assumption that
 it's the two values to the left of the operator, but We'll walk through another
-example for a case when that's not true.\\
+example for a case when that's not true.
 \begin{center}
 \begin{texttt}
 5 4 + 6 3 - + 2 /\\
@@ -150,28 +150,28 @@ Section~\ref{polishNotation}.
 \label{firstFunction}
 Now that we have a handle on basic math using RPN (you do, right?), we can
 take a look at using some system functions. One of the most powerful functions
-you can use in \progLogo is the \texttt{ MAX} function. A common way to roll
+you can use in \progLogo is the \texttt{MAX} function. A common way to roll
 ability scores in RPGs is to roll 4D6 and take the highest 3. Here's a
 script that does just that:\\
-\texttt{ 4d6 3 MAX .e ;}\\
+\indent\texttt{4d6 3 MAX .e ;}\\
 And the result:\\
-\texttt{  (6, 5, 3) [1]: 14}\\
+\indent\texttt{ (6, 5, 3) [1]: 14}\\
 Notice that the output used was explained, if we had just used a period the
-output would just have shown \texttt{ 14}. So we got a nice ability roll of 14
-by using the \texttt{ MAX} system function. The purpose of \texttt{ MAX} is to take the
-highest numbers/rolls from a list and make them into a new list of rolls. For
+output would just have shown \texttt{14}. So we got a nice ability roll of 14
+by using the \texttt{MAX} system function. The purpose of \texttt{MAX} is to take the
+highest numbers/rolls from a list and make them into a new list of numbers. For
 it to complete correctly there must be two items on the program stack first a
 list of rolls/numbers (even a single number counts) and second, the most
-items to put in the new list. There is also a \texttt{ MIN} system function
+items to put in the new list. There is also a \texttt{MIN} system function
 which takes the smallest items from a list. Using both of these it's simple
 to choose whatever range of values you want.
 
-\texttt{ MAX} nad \texttt{ MIN} are just two of a list of system functions. These are
+\texttt{MAX} and \texttt{MIN} are just two of a list of system functions. These are
 general functions besides simple die rolling and math that allow you to make
 more complex scripts with \progLogo. The full list can be found in 
-Section~\ref{language}. This quick start guide will cover two more system
-functions used for defining variables and then you'll know enough to start
-playing around for real.
+Section~\ref{language} or Appendix~\ref{codeListing}.
+This quick start guide will cover three more system
+functions and then you'll know enough to start playing around for real.
 
 \section{Storing Values}
 \label{firstVariables}
@@ -188,18 +188,55 @@ names include: \texttt{\_STRENGTH}, \texttt{\_bAnAnAs97},
 include \texttt{\_\_s\_4}, \texttt{variable}, and \texttt{\_my\#var}. 
 
 There are two system functions you can use to store a variable:
-\texttt{ ASSIGN}, and \texttt{ PUT}. They both need the same arguments on the
-stack, but \texttt{ ASSIGN} places the value back onto the stack while \texttt{ PUT}
+\texttt{ASSIGN}, and \texttt{PUT}. They both need the same arguments on the
+stack, but \texttt{ASSIGN} places the value back onto the stack while \texttt{PUT}
 does not. Since it's easier to try it and see than read a complex explanation
 and this is the Quick Start Guide, here are some examples to get you started.\\
-\indent \texttt{ 21 \_age ASSIGN . ;}\\
-\indent \texttt{ \_age 3 + . ;}\\
-In this first example \texttt{\_age} is set to 21. Since \texttt{ ASSIGN} was used, the
+\indent\texttt{21 \_age ASSIGN . ;}\\
+\indent\texttt{\_age 3 + . ;}\\
+In this first example \texttt{\_age} is set to 21. Since \texttt{ASSIGN} was used, the
 value still remains on the stack for us to print (if we used
-\texttt{ PUT} then print would have caused an error). Then, on the next line we can
+\texttt{PUT} then print would have caused an error). Then, on the next line we can
 use it in another operation. The output from the two lines looks like:\\
 \texttt{21\\24}
 
+The second variable definition function is \texttt{PUT}. This function does
+exactly the same thing as \texttt{ASSIGN}, but it does \emph{not} place the
+value back on the stack. This function is used when you don't want to
+immediately chain a variable assignment with another function call. To get
+the same output as in the above \texttt{ASSIGN} example you have to use the
+code:\\
+\indent\texttt{21 \_age PUT \_age . ;}\\
+\indent\texttt{\_age 3 + . ;}
+
+
+\section{Including Scripts}
+\label{firstInclude}
+A powerful feature of \progLogo is its ability to include pre-made script
+files. There are a number of files that can be downloaded with the program
+including character generator scripts for popular OGL rule sets. For example
+if you wanted to create a human barbarian you can type:
+
+\noindent\texttt{%
+INCLUDE scripts/dnd35e/races/human.die\\
+INCLUDE scripts/dnd35e/class/barbarian.die\\
+INCLUDE scripts/dnd35e/character.die
+}
+
+And the character data will be printed to the screen.
+Look in the directory where you installed \progLogo to see all the scripts
+that shipped with the program.
+
+\section{Exiting}
+\label{firstConsole}
+The last basic you need to know is how to exit the console. It is as simple
+as typing \lq\lq\texttt{EXIT}\rq\rq. This makes the interpreter stop and
+then exit.
+
+Now you know the basics of how to interact with \progLogo. If you are up for
+longer discussions of what each function does and advanced topics you can check
+out the later chapters. I hope you have as much fun using \progLogo as I did
+making it. And I hope you aren't too confused about how to use it.
 
 
 

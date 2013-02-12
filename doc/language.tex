@@ -103,7 +103,7 @@ values, but both may print carriage returns/new lines.
 \hspace*{\parindent}%
 The \texttt{.e} function prints out what is called the value explanation.
 Whenever a function is called, an explanation of what variable the value was
-from, or how the functionobtained its result is created and stored with the
+from, or how the function obtained its result is created and stored with the
 value on the stack. When called, \texttt{.e} prints this stored explanation
 to the current output (screen/file).
 
@@ -117,8 +117,80 @@ See Section~\ref{commandLineOptions} for more information.
 \label{codingStyle}
 At heart, \progLogo is actually its own interpreted programming language that
 is focused on rolling dice. With the power programming provides comes also
-the responsibility of creating readable and uunderstandable code. While there
-are many naming 
+the responsibility of creating readable and understandable code. While there
+are many naming and spacing conventions that people religiously adhere to and
+fight over, I have found that there are some common threads that run through
+most standards. You should be able to use any of the official \progLogo scripts
+as examples of good style, even though they may not match your specific
+standard.
+
+\paragraph*{Why You Should Care About Style\\}
+\hspace*{\parindent}%
+Before we fully discuss script style it is important to touch briefly on why it
+has earned a place in this text. First, when you write a script that you want
+to save and reuse, you may not need to go back and edit that script for a few
+weeks or months. But someday, almost invariably, either you or someone else will
+look at your script and try to figure out how it does what it does. If you've
+named all your variables \texttt{\_01} to \texttt{\_99} it doesn't provide much
+help decrypting the semantics behind the code. You generally want to be able
+to pick out logical blocks of code and understand the computation in a brief
+amount of time. It will greatly help you, and others, to have a good standard
+thus making your scripts much more valuable and useful.
+
+\paragraph*{Useful Comments\\}
+\hspace*{\parindent}%
+Comments are very important because you can tell someone reading your script
+exactly what you are doing on a line. The most difficult part of commenting
+scripts is to get the granularity right, and the number of comments right.
+Granularity is a way to describe how small an action should be commented. At
+one end of the granularity spectrum is a comment on every function:\\
+\indent\texttt{1 \_hp + \# Add one to hp}\\
+It doesn't take much to see how silly this example is. Anyone familiar with
+\progLogo scripting should know what the function \texttt{+} does. On the other
+end of the spectrum is only one comment per script file. This is also absurd
+because there might be many confusing sections within a script file. The
+following is a list of generally where comments should go in a script.
+
+\begin{itemize}
+    \item One comment at the start of the script to describe what the script does
+    \item One comment per function to describe what it does and how it effects the stack
+    \item One comment per logical code block (see \textbf{Spacing})
+\end{itemize}
+
+\paragraph*{Spacing\\}
+\hspace*{\parindent}%
+When you write a script file is is important to realize that you basically
+have as many lines as you want to write your script. \progLogo does not care
+how many empty lines you put in your file. Use these facts to make your
+script more readable. Sepearate the logic into different blocks using blank
+lines. For example, you can easily separate the logic for spells known and 
+hit point calculations in a character creation script.
+
+Spacing can also refer to horizontal spacing and indentation. \progLogo also
+ingnores how many spaces you put in between functions and arguments except
+for the \texttt{PRINT} statement. This makes it easy to line up multiple
+related lists of things that are defined on more than one line. Also, in
+most programming languages it is custom to indent everything within
+a multi-line block by 4-8 spaces or one tab. This lets you see what is inside
+an \texttt{IF/END IF} block and easily identify the end of a \texttt{REPEAT/END
+REPEAT} block.
+
+\paragraph*{Naming Consistency and Expressiveness\\}
+\hspace*{\parindent}%
+Naming can be one of the most important factors in writing understandable code.
+Variable and function names should simply describe their purpose. If more than
+one word is needed to make a description the most common standards are
+\texttt{@CamelCase} where every new word is capitalized (the first word may or
+may not be capitalized). The second multi-word convention is
+\texttt{@underscore\_separated\_words} which is pretty self explanatory.
+
+\paragraph*{Capitalization\\}
+\hspace*{\parindent}%
+Capitalization of system structures and function names is ignored, so you can
+write \texttt{3 12 DICE SIZE} or \texttt{3 12 dice size} and both will act
+the same in a script. It is suggested that you write system functions and
+structures using all upper case or lower case, and mix case as little as is
+feasible. Note that variables and user function names \emph{are} case sensitive.
 
 \section{Control Structures}
 \label{controlStructures}
@@ -727,6 +799,28 @@ placed on the stack.
 
 \section{Console Commands}
 \label{consoleCommands}
+There are a few commmands that cannot be used in script files and are only used
+at the program console (\progLogo run without the \texttt{-i} command).
+
+\noindent\hangindent=\parindent
+\texttt{%
+EXIT
+}\\
+Exit the \progLogo console and end the program.
+
+\breakline
+
+\noindent\hangindent=\parindent
+\texttt{%
+SCRIPT\\
+\indent<statements here, as many as you want>\\
+END SCRIPT
+}\\
+The console usually interprets each line as it is typed. This makes it
+impossible to write multi-line constructs (\texttt{IF/END~IF}, etc.). Typing
+\texttt{SCRIPT} pauses interpretation until \texttt{END~SCRIPT} is used. Once
+a console script is ended, the program interprets all the lines within the
+script and returns to single line interpretation.
 
 \section{Command Line Options}
 \label{commandLineOptions}

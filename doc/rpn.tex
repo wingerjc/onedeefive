@@ -3,6 +3,132 @@
 
 \section{Reverse Polish Notation For the Cautious}
 \label{polishNotation}
+Reverse polish notation sounds pretty scary at first, but those who know it
+will tell you that it is anything but. There are a few concepts you need to
+understand to fully appreciate the bauty of RPN. Once you have these down
+you'll be able to script until the cows come home. Let's get started.
+
+\subsection*{The Program Stack}
+\progLogo is a stack-based programming language, as such, it depends on what
+we call the \emph{Program Stack}. This sounds really techinical but it has a
+pretty simple real life analog. Picture the program stack as a stack of pages. Each page
+either has a number or list on it with an explanation of how that number was
+calculated (see Section~\ref{datatypes}). The only things a function or
+control structure can can do to this stack of paper is to:
+
+\begin{itemize}
+\item Remove and operate on the top page on the stack
+\item Remove and operate on the top \texttt{n} pages on the stack
+\item Add a new page to the stack
+\item Remove all pages from the stack.
+\item Duplicate the top page on the stack.
+\end{itemize}
+
+So this programming stack becomes central to the writing and exectuion of
+scripts. When you type a number in \progLogo, you are saying: \lq\lq
+Push this number on top of the program stack.\rq\rq Similarly, the function
+call to \texttt{GROUP} in this line of code\\
+\indent\texttt{1 2 3 4 5 5 GROUP}\\
+Says \lq\lq Group the top five items on the program stack (below the first)
+into a list.\rq\rq Every function takes a number of items off the top of the
+stack (pops them), adds a number of items to the stack (pushes them), or does
+some combination of pushing and popping.
+
+\subsection*{Orders of Operations}
+Now in normal vanilla math you put your operators (+, -, *, /) in between the
+numbers that they operate on. This is a decent way to things, and for
+theoretical reasons is called infix notation (basically the operator is
+\emph{in} between the two operands). This is OK for humans, but it causes some
+problems when you need to talk about what order you do your math in. When
+you look at the following expression:\\
+\indent\texttt{1 + 2 * 5 - 4 / 2}\\
+It's hard to tell what to do first unless you know the order of operations.
+In standard western math you would do the division and multiplication first
+and then the addition and subtraction. Or you could rewrite the expression
+using parentheses. Like so:\\
+\indent\texttt{(1 + (2 * 5)) - (4 / 2)}\\
+But this is pretty ugly because it takes a lot of typing and you still
+need to parse it which is more painful for a computer than it is for people.
+
+Enter postfix notation. Using postfix notation you operate on numbers in the
+order that they're printed and place the operator after them (post means after).
+Using postfix notation means that by using a stack you can always tell what to
+do first. With our example, a simple translation to postfix notation is:\\
+\indent\texttt{2 5 * 1 + 4 2 / -}\\
+Even if you try to make it as unintuitive as possible:\\
+\indent\texttt{0 4 2 / - 1 2 5 * + +}\\
+You still never need to use any extra notation (like parentheses) and only add
+on one or two extra characters. You also get the bonus of making it
+super easy for computers to interpret. For an explanation of the order you
+would operate on the second postfix example using parentheses as guides:\\
+\indent\texttt{(0 (4 2 /) -) (1 (2 5 *) +) +}
+
+One of the last bonuses of postfix over prefix notation also concerns the
+program stack. Since the stack keeps track of everything that you push onto it
+You can break lines wherever you need to in between function calls and numbers.
+You can also pass as many items as you want by just placing them on the stack.
+
+So, because RPN is so beautiful for writing mathematical expressions in, it
+makes it a very good candidate for a math oriented scripting language. Some
+may disagree and say that it is not necessary and overly complicated to change
+the way they think. But, I feel it is a more elegant solution that removes
+the difficulty of parenthesizing and remembering orders of operations. Also,
+I wrote \progLogo, they didn't.
+
+\section{Writing Script Files}
+\label{fileFormat}
+So, eventually I knew we needed to have the awkward talk. I think it's time you
+knew how things work when a person writes a script. I'm not going to go into
+every gory detail, but I do have to give you a general idea of how it works.
+
+Script files for \progLogo can have any extension you want, but the traditional
+extension used is \lq\lq\texttt{.die}\rq\rq. The format of the file is the really
+crucial element. Files \emph{must} be in plain text format. Plain text files
+normally have the \texttt{.txt} extension. It may be easy for the technically
+uninclined and new users just to write their files as \texttt{.txt} files.
+\progLogo doesn't care.
+
+What is probably more important is the software you use to edit your script files.
+Good software to use includes vim, emacs, notepad++, jEdit, notepad, GEdit,
+TextEdit, and any other plain text editor. You want to make sure when you save
+your file that you save it in plain text format. Why can't you use your standard
+offics software to write script files? One word, formatting. You may not know it,
+but when you save a school paper or work report, all the page layout information
+gets saved to the file too. Along with text formatting (font, bold, italics,
+etc.), colors, author information, and a whole pile of other information that
+\progLogo doesn't care about. Try opening a formatted document with notepad
+or the equivalent program on your operating system and you'll see how much extra
+data is generated. Keep it simple and use a text editor that is meant for
+plain text files.
 
 \section{Running Script Files From the Command Line}
 \label{useCLI}
+This section assumes that you are familiar with what the command line is and
+how to run programs from the command line. There should be a number of easy
+to find tutorials on the internet that cover the basics so you can understand
+what steps you need to take to run \progLogo from the command line. Once your
+familiar enough that you can run the program interpreting console from the
+command line, come back and take another look at this section.
+
+During a normal interactive run of \progLogo input is taken directly from the
+keyboard and typed out directly to the screen. This is usually the desired
+behaviour, but there may be some situations where you want different input and
+output locations. One example is where a DM may want to generate a bunch of
+stat blocks for NPCs and have them conveniently printed to a file. In cases like
+this, file I/O is super convenient (although if you know how to use pipes you
+could do that too).
+
+To read in from a file, just use the \texttt{-i~<file name>} command line
+option. This reads the listed file and processes it as a script. All output
+is still sent to the screen (stdout) unless otherwise directed. When a file
+is used as input in this way it will count console commands as errors. Unlike
+the \texttt{INCLUDE} structure, the file name is allowed to have spaces. Just
+don't forget to wrap it in double quotes (\lq\lq \rq\rq) if it does have spaces.
+
+To print output to a file you can use the similar \texttt{-o~<file name>}
+command line option. Execution with this optioin prints all output statements
+to the output file and any errors are printed to the screen (stderr). If either
+the input file or output file do not exist, the program will exit. The naming
+constratints for the \texttt{-o} option are the same as for the \texttt{-i}
+option: any valid system file name, if it has spaces it must be enclosed in
+quotes.

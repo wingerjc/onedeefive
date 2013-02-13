@@ -4,7 +4,9 @@ package onedeefive;
 import java.util.*;
 import java.io.*;
 
-
+/** A class for testing the reliability and correctness of the
+* standard functions and control structrues provided with 1D5.
+*/
 public class test
 {
     public static void main(String[] args)

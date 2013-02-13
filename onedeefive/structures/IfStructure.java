@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Structure for conditional statements
+*/
 public class IfStructure extends ControlStructure implements LangDef
 {
+    @Override
     public void execute(
         Script script,
         String initial,
@@ -26,21 +29,25 @@ public class IfStructure extends ControlStructure implements LangDef
         }
     }
     
+    @Override
     public String startPattern()
     {
         return IF_STRING;
     }
     
+    @Override
     public String startName()
     {
         return "if";
     }
     
+    @Override
     public String endPattern()
     {
         return ENDIF_STRING;
     }
     
+    @Override
     public String endName()
     {
         return "end if";

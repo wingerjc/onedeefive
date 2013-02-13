@@ -4,8 +4,12 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** REQUIRED Function for accessing variable values and placing names on the
+* stack so they can be assigned to.
+*/
 public class VariableFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -31,6 +35,7 @@ public class VariableFunction extends SystemFunction implements LangDef
         stack.push(toAdd);
     }
     
+    @Override
     public String matchString()
     {
         return VARIABLE_STRING;

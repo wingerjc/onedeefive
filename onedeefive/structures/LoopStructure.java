@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Structure for finxed iteration loops.
+*/
 public class LoopStructure extends ControlStructure implements LangDef
 {
+    @Override
     public void execute(
         Script script,
         String initial,
@@ -28,21 +31,25 @@ public class LoopStructure extends ControlStructure implements LangDef
         }
     }
     
+    @Override
     public String startPattern()
     {
         return LOOP_STRING;
     }
     
+    @Override
     public String startName()
     {
         return "repeat";
     }
     
+    @Override
     public String endPattern()
     {
         return ENDLOOP_STRING;
     }
     
+    @Override
     public String endName()
     {
         return "end loop";

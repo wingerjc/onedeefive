@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Integer comparison functions. (&lt;, &gt;, =, !=, &lt;=, &gt;=)
+*/
 public class CompareFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -53,6 +56,7 @@ public class CompareFunction extends SystemFunction implements LangDef
         stack.push(new StackFrame(desc,ret));
     }
     
+    @Override
     public String matchString()
     {
         return COMPARE_STRING;

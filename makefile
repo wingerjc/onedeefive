@@ -3,6 +3,8 @@
 # on my system I use an aliased del (dos/win32) hence /S
 RMFLAGS=/S
 
+RMDIRFLAGS=/Q /S
+
 # general compilation step
 all: functions structures
 	javac onedeefive/Script.java
@@ -26,6 +28,13 @@ console:
 test:
 	javac onedeefive/test.java
 	java onedeefive/test
+
+# make and javadoc pages
+javadoc:
+	javadoc -sourcepath . -d javadoc -subpackages onedeefive
+
+cleanjavadoc:
+	rmdir $(RMDIRFLAGS) javadoc
 
 # build specific parts of the program
 functions: onedeefive/LangDef.class onedeefive/StackFrame.class

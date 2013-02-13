@@ -5,8 +5,11 @@ import java.util.regex.*;
 import java.io.*;
 import onedeefive.*;
 
+/** Functions for simple binary mathematical functions (+, -, *, /, %)
+*/
 public class MathFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd,
         Stack<StackFrame> stack,
@@ -55,6 +58,7 @@ public class MathFunction extends SystemFunction implements LangDef
         }
     }
     
+    @Override
     public String matchString()
     {
         return MATH_STRING;

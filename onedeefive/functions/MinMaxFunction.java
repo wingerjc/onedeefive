@@ -4,8 +4,12 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Functions for creating lists of the highest or lowest n items from an
+* input list. (min, max)
+*/
 public class MinMaxFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -73,6 +77,7 @@ public class MinMaxFunction extends SystemFunction implements LangDef
         stack.push(new StackFrame(desc,ret));
     }
     
+    @Override
     public String matchString()
     {
         return "(" + MIN_STRING + ")|(" + MAX_STRING + ")";

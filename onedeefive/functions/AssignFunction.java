@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Functions that assign values to variables (Assign, put)
+*/
 public class AssignFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -43,6 +46,7 @@ public class AssignFunction extends SystemFunction implements LangDef
         }
     }
     
+    @Override
     public String matchString()
     {
         return ASSIGN_STRING + "|" + SHOVE_STRING;

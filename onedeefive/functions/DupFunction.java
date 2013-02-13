@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Stack top duplication function (dup)
+*/
 public class DupFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -28,6 +31,7 @@ public class DupFunction extends SystemFunction implements LangDef
         stack.push(toAdd);
     }
     
+    @Override
     public String matchString()
     {
         return DUP_STRING;

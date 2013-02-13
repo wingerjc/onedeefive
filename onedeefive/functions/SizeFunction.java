@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Function for determining list size. (size)
+*/
 public class SizeFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -32,6 +35,7 @@ public class SizeFunction extends SystemFunction implements LangDef
         stack.push(new StackFrame(desc,size));
     }
     
+    @Override
     public String matchString()
     {
         return SIZE_STRING;

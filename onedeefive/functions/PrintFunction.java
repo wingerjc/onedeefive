@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Functions for printing stack values to the output stream.
+*/
 public class PrintFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -36,6 +39,7 @@ public class PrintFunction extends SystemFunction implements LangDef
         }
     }
     
+    @Override
     public String matchString()
     {
         return OUTPUT_STRING;

@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Functions that remove items from the stack (pop, clear)
+*/
 public class StackFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -28,6 +31,7 @@ public class StackFunction extends SystemFunction implements LangDef
         }
     }
     
+    @Override
     public String matchString()
     {
         return STACK_STRING;

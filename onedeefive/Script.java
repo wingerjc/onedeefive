@@ -24,16 +24,36 @@ public class Script implements LangDef
     /** internal output stream for all scripts */
     private static PrintStream STD_OUT = null;
     
+    
 /* +++++++++++++++   INSTANCE MEMBERS +++++++++++++++++++++ */
+    /** The internal list of strings that make up a script.
+    * Each string can be a ControlStructure statement or a list of function
+    * calls.
+    */
     private String[] _script;
     
     
 /* +++++++++++++++   CONSTRUCTORS +++++++++++++++++++++ */
+    /** Create a new script directly from an input string.
+    * This constructor is equivalent to Script(script, false).
+    *
+    * @param script
+    *        The string that makes up the script.
+    */
     public Script(String script)
     {
         this(script,false);
     }
     
+    /** Create a new script. If 'file' is true, input is treated as a file name
+    * and shte script is read from that file. If 'file' is false, input is
+    * treated as the script text.
+    *
+    * @param input
+    *        Either an input file to read a script from, or a script.
+    * @param file
+    *        Wheter 'input' is a file name (true), or a script (false)
+    */
     public Script(String input, boolean file)
     {
         // make sure we have all the system functions
@@ -89,6 +109,12 @@ public class Script implements LangDef
     }
     
 /* +++++++++++++++   INSTANCE METHODS +++++++++++++++++++++ */
+    /** Execute this script using a new system Stack and return a reference to
+    * the stack used. A nes variable mapping context/scope is created for this
+    * script execution.
+    *
+    * @return The stack after the completion of the script
+    */
     public Stack<StackFrame> execute()
     {
         Stack<StackFrame> stack = new Stack<StackFrame>();
@@ -96,13 +122,25 @@ public class Script implements LangDef
         return stack;
     }
     
-    // for executing functions, etc. that get new scope
+    /** Execute thie script with the given Stack and a new variable
+    * scope/context.
+    *
+    * @param stack
+    *        The system stack to use.
+    */
     public void execute(Stack<StackFrame> stack)
     {
         execute(stack, new HashMap<String,StackFrame>());
     }
     
-    // execute the current script, give it the scope
+    /** Execute this script using the given Stack and variable context/scope.
+    *
+    * @param stack
+    *        The stack that this script uses for passing values to functions.
+    * @param context
+    *        The context/scope that matches variable names to values for this
+    *        script execution.
+    */
     public void execute(Stack<StackFrame> stack, Map<String,StackFrame> context)
     {
         int i;
@@ -144,7 +182,17 @@ public class Script implements LangDef
         }
     }
     
-    private boolean processTokens(
+    /** Process an individual line of a script as a list of tokens. Tokens can
+    * either be system functions of user defined functions.
+    *
+    * @param script
+    *        The script line to process
+    * @param stack
+    *        The current program stack
+    * @param context
+    *        The current name/variable mapping for the script's scope.
+    */
+    private void processTokens(
         String script,
         Stack<StackFrame> stack,
         Map<String,StackFrame> context
@@ -183,16 +231,28 @@ public class Script implements LangDef
                 );
             }
         }
-        
-        return i > 0; // processed at least one token
     }
     
+    /** Define this script as a user function named 'name'.
+    *
+    * @param name
+    *        The name that this script is referred to as a user defined function.
+    */
     public void makeFunction(String name)
     {
         _userFunctions.put(name,this);
     }
     
-    public Script subscript(int start, int end)
+    /** Create a script that spans the lines start (inclusive) to end
+    * (exclusive) of this script.
+    *
+    * @param start
+    *        The starting index of the subscript, inclusive
+    * @param end
+    *        The index of the last line of the subscript, exclusive
+    * @return The new script based on lines [start,end)
+    */
+    private Script subscript(int start, int end)
     {
         Script ret = new Script("");
         
@@ -210,6 +270,8 @@ public class Script implements LangDef
     }
     
 /* +++++++++++++++   STATIC METHODS +++++++++++++++++++++ */
+    /** Load all the standard SystemFunction and ControlStructure objects.
+    */
     private static void instantiateSystem()
     {
         _systemFunctions = new ArrayList<SystemFunction>();
@@ -239,6 +301,11 @@ public class Script implements LangDef
         _userFunctions = new HashMap<String,Script>();
     }
     
+    /** Add a new SystemFunction to the list of available SystemFunctions.
+    *
+    * @param func
+    *        The new functino to add, null will not be added to the list.
+    */
     public static void addSystemFunction(SystemFunction func)
     {
         if(func != null)
@@ -247,6 +314,11 @@ public class Script implements LangDef
         }
     }
     
+    /** Add a new ControlStructure to the list of available ControlStructures.
+    *
+    * @param struct
+    *        The new structure to add, null will not be added to the list
+    */
     public static void addControlStructure(ControlStructure struct)
     {
         if(struct != null)
@@ -255,12 +327,19 @@ public class Script implements LangDef
         }
     }
     
+    /** Access the output stream currently in use by the Script class.
+    *
+    * @return The current Script output stream.
+    */
     public static PrintStream output()
     {
         checkOutput();
         return STD_OUT;
     }
     
+    /** On initialization of functions and structures, make sure that the 
+    * output is not null. (if so, assign to System.out)
+    */
     private static void checkOutput()
     {
         if(STD_OUT == null)
@@ -269,6 +348,9 @@ public class Script implements LangDef
         }
     }
     
+    /** Set the output of the Script class to the specified output stream.
+    * You assume responsibility for closing this stream if reqquired.
+    */
     public static boolean setOutput(PrintStream out)
     {
         if(out == null || out.checkError())

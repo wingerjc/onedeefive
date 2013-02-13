@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Boolean operation functions. (and, or, not, xor)
+*/
 public class BooleanFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -51,6 +54,7 @@ public class BooleanFunction extends SystemFunction implements LangDef
         stack.push(new StackFrame(desc,ret));
     }
     
+    @Override
     public String matchString()
     {
         return BOOLEAN_STRING;

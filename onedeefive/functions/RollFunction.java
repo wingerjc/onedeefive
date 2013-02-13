@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Functions for rolling dice (xDy, dice)
+*/
 public class RollFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -74,6 +77,7 @@ public class RollFunction extends SystemFunction implements LangDef
         stack.push(new StackFrame(desc, ret));
     }
     
+    @Override
     public String matchString()
     {
         return ROLL_STRING;

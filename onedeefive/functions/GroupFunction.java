@@ -4,8 +4,11 @@ import java.util.*;
 import java.util.regex.*;
 import onedeefive.*;
 
+/** Function for grouping multiple values into one list (group)
+*/
 public class GroupFunction extends SystemFunction implements LangDef
 {
+    @Override
     public void execute(
         String cmd, 
         Stack<StackFrame> stack,
@@ -55,6 +58,7 @@ public class GroupFunction extends SystemFunction implements LangDef
         stack.push(new StackFrame(desc,ret));
     }
     
+    @Override
     public String matchString()
     {
         return GROUP_STRING;

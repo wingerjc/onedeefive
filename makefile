@@ -3,6 +3,12 @@ all: functions structures
 	javac onedeefive/Script.java
 	javac onedeefive/onedeefive.java
 
+jar:
+	jar -cfe onedeefive.jar onedeefive/onedeefive onedeefive
+
+runjar:
+	java -jar onedeefive.jar
+
 console:
 	java onedeefive/onedeefive
 

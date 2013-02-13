@@ -4,14 +4,28 @@ import java.util.*;
 import java.util.regex.*;
 import java.io.*;
 
+/** This program houses the Main function for onedeefive the scriptable
+ * dice rolling program. This class allows for 1D5 to be run from the command
+ * line as an interactive scripting environment.
+ *
+ * The program can also be run with specified input and output files.
+*/
 public class onedeefive
 {
+    /** Pattern for the start of a multi-liine script. **/
     private static final String START_READ = "(?i)script(?i)";
+    
+    /** Pattern for the end of a multi-line script. **/
     private static final String END_READ = "(?i)end script(?i)";
+    
+    /** Pattern for the string to exit interactive mode. **/
     private static final String EXIT_STRING = "(?i)exit(?i)";
     
+    /** Version string: major.minor.bugfix/MMYY **/
     private static final String VERSION = "1.0.0/0213";
     
+    /** The basic command line program.
+    */
     public static void main(String[] args)
     {
         if(args.length == 0)
@@ -106,6 +120,14 @@ public class onedeefive
         }
     }
     
+    /** consoleMode() runs the program as an interactive scripting
+     * environment that takes input from System.in and print all output
+     * to Script.output() (usually system.out). 
+     *
+     * All errors are printed to System.err, and the script tries to continue.
+     * The script will not continue after a n invalid INCLUDE statement, but
+     * the console will return.
+    **/
     public static void consoleMode()
     {
         Scanner scan = new Scanner(System.in);

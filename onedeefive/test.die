@@ -1,7 +1,8 @@
+# A basic test for including files.
     print good 
 2 . ;
 	PRINT Better    
 8 . ;
 PRINT Best		
-9 .
+9 . ;
 

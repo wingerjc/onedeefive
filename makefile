@@ -1,21 +1,33 @@
 
+# redefine for recursive deletion
+# on my system I use an aliased del (dos/win32) hence /S
+RMFLAGS=/S
+
+# general compilation step
 all: functions structures
 	javac onedeefive/Script.java
 	javac onedeefive/onedeefive.java
 
-jar:
+# build a jar file from the java source
+jar: onedeefive.jar
+
+onedeefive.jar:
 	jar -cfe onedeefive.jar onedeefive/onedeefive onedeefive
 
-runjar:
+# run the jar file
+runjar: onedeefive.jar
 	java -jar onedeefive.jar
 
+# run the program on the command line
 console:
 	java onedeefive/onedeefive
 
+# run the java test script
 test:
 	javac onedeefive/test.java
 	java onedeefive/test
 
+# build specific parts of the program
 functions: onedeefive/LangDef.class onedeefive/StackFrame.class
 	javac onedeefive/functions/*.java
 
@@ -28,5 +40,6 @@ onedeefive/LangDef.class:
 onedeefive/StackFrame.class:
 	javac onedeefive/StackFrame.java
 
+# remove backups and class files from the directory
 clean:
-	cd onedeefive; rm /S *.class *~
+	rm $(RMFLAGS) *.class *~

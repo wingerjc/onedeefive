@@ -7,15 +7,28 @@ import java.util.regex.*;
 import onedeefive.functions.*;
 import onedeefive.structures.*;
 
+/** This clas represents the heart of 1D5. 
+*/
 public class Script implements LangDef
 {
+/* +++++++++++++++   STATIC MEMBERS +++++++++++++++++++++ */
+    /** Internal list of available system functions. */
     private static List<SystemFunction> _systemFunctions = null;
-    private static List<ControlStructure> _controlStructures = null;
-    private static Map<String,Script> _userFunctions = null;
-    private String[] _script;
     
+    /** Internal list of available control structures. */
+    private static List<ControlStructure> _controlStructures = null;
+    
+    /** Internal map of user defined functions */
+    private static Map<String,Script> _userFunctions = null;
+    
+    /** internal output stream for all scripts */
     private static PrintStream STD_OUT = null;
     
+/* +++++++++++++++   INSTANCE MEMBERS +++++++++++++++++++++ */
+    private String[] _script;
+    
+    
+/* +++++++++++++++   CONSTRUCTORS +++++++++++++++++++++ */
     public Script(String script)
     {
         this(script,false);
@@ -73,6 +86,14 @@ public class Script implements LangDef
                 _script[i] = _script[i].replaceAll("[ \t]+",TOKEN_SEPARATOR).trim();
             }
         }
+    }
+    
+/* +++++++++++++++   INSTANCE METHODS +++++++++++++++++++++ */
+    public Stack<StackFrame> execute()
+    {
+        Stack<StackFrame> stack = new Stack<StackFrame>();
+        execute(stack, new HashMap<String,StackFrame>());
+        return stack;
     }
     
     // for executing functions, etc. that get new scope
@@ -188,6 +209,7 @@ public class Script implements LangDef
         return ret;
     }
     
+/* +++++++++++++++   STATIC METHODS +++++++++++++++++++++ */
     private static void instantiateSystem()
     {
         _systemFunctions = new ArrayList<SystemFunction>();
@@ -215,6 +237,22 @@ public class Script implements LangDef
         _controlStructures.add(new IncludeStructure());
         
         _userFunctions = new HashMap<String,Script>();
+    }
+    
+    public static void addSystemFunction(SystemFunction func)
+    {
+        if(func != null)
+        {
+            _systemFunctions.add(func);
+        }
+    }
+    
+    public static void addControlStructure(ControlStructure struct)
+    {
+        if(struct != null)
+        {
+            _controlStructures.add(struct);
+        }
     }
     
     public static PrintStream output()

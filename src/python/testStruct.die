@@ -1,0 +1,65 @@
+PRINT testing printing
+  PRINT
+PRINT This is the second line
+print no space since last print
+prinT
+print third line
+print#should have no comments if you see this it is bad!
+print
+
+print defining function
+print
+Fun @t1
+  print      FUNCTION TEST SUCCESSFUL!
+  print
+end fun
+print function defined
+print 
+print calling function
+print
+@t1
+print function called
+print
+print
+
+print testing fnPrint and numbers: expect 5 4 3 2 1
+print
+1 2 3 4 5 . . . . . ; ;
+
+print testing peek print: expect 1 1 1 1
+print
+2 1 ^ ^ ^ . ; ;
+
+print testing explain print: expect 2: 2
+print
+.e ; ;
+
+print testing conditional
+print
+8
+if
+    print You should see this message! Conditional success!
+    ;
+end if
+0
+if
+    print you should not see this message! Conditional fail!
+    ;
+end if
+;
+
+print testing repeat
+print
+print you should see 5 $s
+; 5
+repeat
+  print $
+end repeat
+;
+print You should see a countdown from 9 to 0
+; 0 1 2 3 4 5 6 7 8 9 10
+repeat
+  .
+end repeat
+; ;
+

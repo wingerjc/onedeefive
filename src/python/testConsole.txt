@@ -1,0 +1,28 @@
+# this file is used for testing the console
+# it is used by calling onedeefive with input
+# redirected from this file. example:
+# $>python ondeefive.py <testConsole.txt
+# 
+# NOTE: because this file tests console commands, it is not a valid
+#       script file for using with the INCLUDE structure
+
+script
+print testing multi-line scripts
+print
+
+fun @foo
+  print foo defined
+end fun
+end script
+print Scripts work!
+; ;
+print Loading testStruct.die
+; ;
+include testStruct.die
+
+; ;
+print Loading testFunctions1.die
+; ;
+include testFunctions1.die
+
+exit

@@ -1,0 +1,81 @@
+\chapter{Example Scripts}
+\label{bigExamples}
+Small examples have been placed throughout the text to give you an idea
+of what \progLogo scripts should look like. This appendix will provide some
+larger examples for you to peruse and hopefully absorb a little more information
+on how scripting works.
+
+\breakline
+
+\tt
+\begin{verbatim}
+# This script generates hit and damage rolls
+# for a group of monsters that all have the same weapons.
+
+# @damageRolls
+# Parameters: n damageDie <TOS>
+# Output Format:
+#     Monster: <1..n>
+#     To hit: <1..20> Damage: <1..damageDie>
+FUN @damageRolls
+    _die PUT
+    1 _counter PUT
+    REPEAT # number of times should be on the stack
+        PRINT Monster:
+        _counter . ;
+        PRINT To hit:
+        1d20 .
+        PRINT  Damage:
+        1 _die DICE . ;
+        1 _counter + _counter PUT
+    END REPEAT
+END FUN
+
+# Call to the function with 5 monsters
+# with a D10 damage die
+5 10 @damageRolls
+\end{verbatim}
+\rm
+
+\breakline
+
+\tt
+\begin{verbatim}
+\# This is a cannonical example that is available for
+\# many different programming languages online.
+
+\# Print out the lyrics to '99 bottles of beer' 
+FUN @bottlesOfBeer
+    100 _i ASSIGN
+    REPEAT
+        # the new value of _i
+        _i 1 - _i ASSIGN DUP
+        
+        # print out the common phrase
+        _i .
+        PRINT  bottles of beer on the wall.
+        ; _i .
+        PRINT  bottles of beer!
+        PRINT
+        
+        # print out the end of the phrase
+        0 >
+        IF
+            PRINT  Take one down, Pass it around,
+            ; _i 1 - .
+            PRINT  bottles of beer on the wall!
+            ; ;
+        END IF
+        0 <=
+        IF
+            PRINT  Go to the store, buy some more,
+            PRINT
+            PRINT  99 bottles of beer on the wall!
+            PRINT
+        END IF
+    END REPEAT
+END FUN
+\end{verbatim}
+
+\rm
+

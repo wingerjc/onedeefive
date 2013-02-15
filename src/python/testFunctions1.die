@@ -1,0 +1,9 @@
+
+Print testing fixed dice roll
+print
+print 3d8:
+3d8 .e ;
+print 1d20:
+1d20 .e ;
+print 10D1:
+10D1 .e ;

@@ -16,13 +16,33 @@ end fun
 end script
 print Scripts work!
 ; ;
-print Loading testStruct.die
+print ---------------- Loading testStructs.die -----------------------
 ; ;
 include testStruct.die
 
 ; ;
-print Loading testFunctions1.die
+print ---------------- Loading testFunctions1.die -----------------------
 ; ;
 include testFunctions1.die
+
+; ;
+print ---------------- Loading testFunctions2.die -----------------------
+; ;
+include testFunctions2.die
+
+; ;
+print ---------------- Loading testFunctions3.die -----------------------
+; ;
+include testFunctions3.die
+
+; ;
+print ---------------- Loading testFunctions4.die -----------------------
+; ;
+include testFunctions4.die
+
+; ;
+print ---------------- Loading testFunctions5.die -----------------------
+; ;
+include testFunctions5.die
 
 exit

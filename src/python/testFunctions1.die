@@ -6,4 +6,124 @@ print 3d8:
 print 1d20:
 1d20 .e ;
 print 10D1:
-10D1 .e ;
+10D1 .e ; ;
+
+print testing function die roll
+print
+print 0 12 dice:
+0 12 dice .e ;
+print 20 8 dice:
+20 8 dice .e ;
+print 5 1 dice:
+5 1 dice .e ;
+
+PRINT
+print testing comparisons
+; ;
+-1 3 <
+IF
+    PRINT LT 1 PASSED!
+    ;
+END IF
+
+7 0 <
+IF
+    PRINT LT 2 FAILED! ===
+    ;
+END IF
+
+10 10 <
+IF
+    PRINT LT 3 FAILED! ===
+END IF
+
+0 18 <=
+IF
+    PRINT LTE 1 PASSED!
+    ;
+END IF
+
+8 0 <=
+IF
+    PRINT LTE 2 FAILED! ===
+    ;
+END IF
+
+7 7 <=
+IF
+    PRINT LTE 3 PASSED!
+    ;
+END IF
+
+0 9 >
+IF
+    PRINT GT 1 FAILED! ===
+    ;
+END IF
+
+20 8 >
+IF
+    PRINT GT 2 PASSED!
+    ;
+END IF
+
+19 19 >
+IF
+    PRINT GT 3 FAILED! === 
+    ;
+END IF
+
+5 9 >=
+IF
+    PRINT GTE 1 FAILED! === 
+    ;
+END IF
+
+2 1 >=
+IF
+    PRINT GTE 2 PASSED! 
+    ;
+END IF
+
+8 8 >=
+IF
+    PRINT GTE 3 PASSED! 
+    ;
+END IF
+
+1 4 =
+IF
+    PRINT EQ 1 FAILED! ===
+    ;
+END IF
+
+8 2 =
+IF
+    PRINT EQ 2 FAILED! === 
+    ;
+END IF
+
+3 3 =
+IF
+    PRINT EQ 3 PASSED!
+    ;
+END IF
+
+-10 10 !=
+IF
+    PRINT NEQ 1 PASSED! 
+    ;
+END IF
+
+7 3 !=
+IF
+    PRINT NEQ 2 PASSED! 
+    ;
+END IF
+
+21 21 !=
+IF
+    PRINT NEQ 3 FAILED! ===
+    ;
+END IF
+

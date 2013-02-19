@@ -6,11 +6,13 @@ class StackFrame:
         self._value = value
         
         if(not (rolls is None)):
-            self._rolls = rolls[0:len(rolls)]
+            self._rolls = rolls[:]
             self._value = 0
             
             for i in self._rolls:
                 self._value += i
+        else :
+            self._rolls = None
     
     def value(self):
         return self._value

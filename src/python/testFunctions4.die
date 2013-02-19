@@ -1,0 +1,96 @@
+
+PRINT testing assign function
+;
+_tmp 0 !=
+IF
+    PRINT VARIABLE 1 FAILED!
+    ;
+END IF
+
+5 _t1 ASSIGN 5 !=
+IF
+    PRINT ASSIGN 1 FAILED!
+    ;
+END IF
+
+_t1 5 !=
+IF
+    PRINT ASSIGN 2 FAILED! 
+    ;
+END IF
+
+0 1 2 3 4 GROUP _tmp2 ASSIGN 6 !=
+IF
+    PRINT ASSIGN 3 FAILED!
+    ;
+END IF
+
+_tmp2 SIZE 4 !=
+IF
+    PRINT ASSIGN 4 FAILED!
+    ;
+END IF
+
+_tmp2 2 MAX 5 !=
+IF
+    PRINT ASSIGN 5 FAILED!
+    ;
+END IF
+
+3 _tmp3 ASSIGN 3 !=
+IF
+    PRINT ASSIGN 6 FAILED!
+    ;
+END IF
+
+_tmp3 7 DICE SIZE 3 !=
+IF
+    PRINT ASSIGN 8 FAILED!
+    ;
+END IF
+
+100 _tmp3 1 2 GROUP 1 MAX DICE 1 MAX 3 !=
+IF
+    PRINT ASSIGN 9 FAILED!
+    ;
+END IF
+
+
+PRINT If you don't see any error messages, assign testing passed
+; ;
+
+print testing put function
+;
+
+-1 9 _tmp4 put -1 !=
+IF
+    PRINT PUT 1 FAILED!
+    ;
+END IF
+
+_tmp4 9 !=
+IF
+    PRINT PUT 2 FAILED!
+    ;
+END IF
+
+-2 0 1 2 3 4 5 GROUP _tmp5 PUT -2 !=
+IF
+    PRINT PUT 3 FAILED!
+    ;
+END IF
+
+-3 _tmp5 SIZE 5 !=
+IF
+    PRINT PUT 4 FAILED!
+    ;
+END IF
+
+_tmp5 10 !=
+IF
+    PRINT PUT 5 FAILED!
+    ;
+END IF
+
+PRINT if you do not see any errors PUT testing passed
+

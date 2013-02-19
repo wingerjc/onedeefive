@@ -1,0 +1,138 @@
+print Testing GROUP function
+;
+0 1 2 3 group 3 !=
+IF
+    PRINT GROUP 1 FAILED!
+    ;
+END IF
+
+0 0 0 0 0 0 6 GROUP 0 !=
+IF
+    PRINT GROUP 2 FAILED
+    ;
+END IF
+
+1 2 3 0 GROUP 0 !=
+IF
+    PRINT GROUP 3 FAILED!
+    ;
+END IF
+
+1 2 3 3 GROUP 4 5 6 3 GROUP 7 3 GROUP 28 !=
+IF
+    PRINT GROUP 4 FAILED!
+    ;
+END IF
+
+0 GROUP 0 !=
+IF
+    PRINT GROUP 5 FAILED!
+    ;
+END IF
+
+
+PRINT if you see no errors, main group tests passed.
+;
+PRINT you should see a list of 0-9 printed below:
+; 9 8 7 6 5 4 3 2 1 0 10 GROUP .e ; ;
+
+
+
+
+print Testing SIZE function
+;
+3d8 SIZE 3 !=
+IF
+    PRINT SIZE 1 FAILED!
+    ;
+END IF
+
+9 SIZE 1 !=
+IF
+    PRINT SIZE 2 FAILED
+    ;
+END IF
+
+1 2 3 3 GROUP 10d4 2 GROUP SIZE 13 !=
+IF
+    PRINT SIZE 3 FAILED!
+    ;
+END IF
+
+0 GROUP SIZE 1 !=
+IF
+    PRINT SIZE 4 FAILED!
+    ;
+END IF
+
+print if you see no failure messages, all size tests passed.
+; ;
+
+
+
+print testing min/max functions
+;
+1 2 1 2 1 2 1 2 8 GROUP 5 MIN 6 !=
+IF
+    PRINT MIN 1 FAILED!
+    ;
+END IF
+
+7 4 MIN 7 !=
+IF
+    PRINT MIN 2 FAILED!
+    ;
+END IF
+
+1 2 3 4 4 GROUP 0 MIN 0 !=
+IF
+    PRINT MIN 3 FAILED!
+    ;
+END IF
+
+1 2 3 4 5 6 6 GROUP 3 MIN SIZE 3 !=
+IF
+    PRINT MIN 4 FAILED!
+    ;
+END IF
+
+1 2 1 2 1 2 1 2 8 GROUP 5 MAX 9 !=
+IF
+    PRINT MAX 1 FAILED!
+    ;
+END IF
+
+7 4 MAX 7 !=
+IF
+    PRINT MAX 2 FAILED!
+    ;
+END IF
+
+1 2 3 4 4 GROUP 0 MIN 0 !=
+IF
+    PRINT MAX 3 FAILED!
+    ;
+END IF
+
+1 2 3 4 5 6 6 GROUP 3 MAX SIZE 3 !=
+IF
+    PRINT MAX 4 FAILED!
+    ;
+END IF
+
+0 1 2 3 4 5 6 7 GROUP 4 MIN 1 MAX 3 !=
+IF
+    PRINT MINMAX 1 FAILED!
+    ;
+END IF
+
+0 1 2 3 4 5 6 7 GROUP 4 MAX 1 MIN 3 !=
+IF
+    PRINT MINMAX 2 FAILED!
+    ;
+END IF
+
+
+
+print if you see no failure messages, all min/max tests passed.
+;

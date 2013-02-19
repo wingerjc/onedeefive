@@ -69,6 +69,12 @@ class Script:
             
             if not processed and token in Script._userFunctions:
                 Script._userFunctions[token].execute(stack, context)
+            
+            if not processed and re.match(LangDef.VARIABLE_STRING, token) :
+                if token in context :
+                    stack.append(context[token])
+                else :
+                    stack.append(StackFrame(token,0))
                 
     def makeFunction(self, name):
         Script._userFunctions[name] = self
@@ -86,6 +92,15 @@ def instantiateSystem():
     Script._systemFunctions.append(SystemFunction.IntegerFunction())
     Script._systemFunctions.append(SystemFunction.PrintFunction())
     Script._systemFunctions.append(SystemFunction.DiceFunction())
+    Script._systemFunctions.append(SystemFunction.ComparisonFunction())
+    Script._systemFunctions.append(SystemFunction.MathFunction())
+    Script._systemFunctions.append(SystemFunction.BooleanFunction())
+    Script._systemFunctions.append(SystemFunction.GroupFunction())
+    Script._systemFunctions.append(SystemFunction.SizeFunction())
+    Script._systemFunctions.append(SystemFunction.MinMaxFunction())
+    Script._systemFunctions.append(SystemFunction.AssignFunction())
+    Script._systemFunctions.append(SystemFunction.StackFunction())
+    Script._systemFunctions.append(SystemFunction.DupFunction())
         
     Script._userFunctions = dict()
         

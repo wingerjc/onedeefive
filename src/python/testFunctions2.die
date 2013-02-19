@@ -1,0 +1,202 @@
+PRINT testing math functions
+;
+
+1 1 + 2 !=
+IF
+    PRINT + 1 FAILED!
+    ;
+END IF
+
+13 0 + 13 !=
+IF
+    PRINT + 2 FAILED!
+    ;
+END IF
+
+-14 -21 + -35 !=
+IF
+    PRINT + 2 FAILED!
+    ;
+END IF
+
+10 3 - 7 !=
+IF
+    PRINT - 1 FAILED!
+    ;
+END IF
+
+5 7 - -2 !=
+IF
+    PRINT - 2 FAILED!
+    ;
+END IF
+
+38 38 - 0 !=
+IF
+    PRINT - 3 FAILED!
+    ;
+END IF
+
+8 3 * 24 !=
+IF
+    PRINT * 1 FAILED!
+    ;
+END IF
+
+2 -7 * -14 !=
+IF
+    PRINT * 2 FAILED!
+    ;
+END IF
+
+18 1 * 18 !=
+IF
+    PRINT * 3 FAILED!
+    ;
+END IF
+
+0 23 * 0 !=
+IF
+    PRINT * 4 FAILED!
+    ;
+END IF
+
+9 1 / 9 !=
+IF
+    PRINT / 1 FAILED!
+    ;
+END IF
+
+10 2 / 5 !=
+IF
+    PRINT / 2 FAILED!
+    ;
+END IF
+
+17 3 / 5 !=
+IF
+    PRINT / 3 FAILED!
+    ;
+END IF
+
+2 20 / 0 !=
+IF
+    PRINT / 4 FAILED!
+    ;
+END IF
+
+-7 7 / -1 !=
+IF
+    PRINT / 5 FAILED!
+    ;
+END IF
+
+8 2 % 0 !=
+IF
+    PRINT % 1 FAILED!
+    ;
+END IF
+
+17 3 % 2 !=
+IF
+    PRINT % 2 FAILED!
+    ;
+END IF
+
+29 5 % 4 !=
+IF
+    PRINT % 3 FAILED!
+    ;
+END IF
+
+PRINT if you see no failed messages, all math functions passed
+; ;
+
+PRINt Testing boolean functions
+;
+
+0 0 AND 0 !=
+IF
+    PRINT and 1 FAILED!
+    ;
+END IF
+
+0 1 and 0 !=
+IF
+    PRINT and 2 FAILED!
+    ;
+END IF
+
+1 0 and 0 !=
+IF
+    PRINT and 3 FAILED!
+    ;
+END IF
+
+1 1 and 1 !=
+IF
+    PRINT and 4 FAILED!
+    ;
+END IF
+
+0 0 or 0 !=
+IF
+    PRINT or 1 FAILED!
+    ;
+END IF
+
+0 1 or 1 !=
+IF
+    PRINT or 2 FAILED!
+    ;
+END IF
+
+1 0 or 1 !=
+IF
+    PRINT or 3 FAILED!
+    ;
+END IF
+
+1 1 or 1 !=
+IF
+    PRINT or 4 FAILED!
+    ;
+END IF
+
+0 0 xor 0 !=
+IF
+    PRINT xor 1 FAILED!
+    
+END IF
+
+0 1 xor 1 !=
+IF
+    PRINT xor 2 FAILED!
+    ;
+END IF
+
+1 0 xor 1 !=
+IF
+    PRINT xor 3 FAILED!
+    ;
+END IF
+
+1 1 xor 0 !=
+IF
+    PRINT xor 4 FAILED!
+    ;
+END IF
+
+0 not 1 !=
+IF
+    PRINT not 1 FAILED!
+    ;
+END IF
+
+1 not 0 !=
+IF
+    PRINT not 2 FAILED!
+    ;
+END IF
+
+print If you see noo failed messages, all boolean functions passed

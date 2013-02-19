@@ -51,13 +51,13 @@ class IfStructure(ControlStructure):
     def startPattern(self):
         return LangDef.IF_STRING
     
-    def startString(self):
+    def startName(self):
         return "if"
     
     def endPattern(self):
         return LangDef.ENDIF_STRING
     
-    def endString(self):
+    def endName(self):
         return "end if"
 
 # +++++++++++++++++

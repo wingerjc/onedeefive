@@ -1,0 +1,54 @@
+
+PRINT testing POP function
+;
+
+2 3 POP 2 !=
+IF
+    PRINT POP 1 FAILED!
+    ;
+END IF
+
+1 2 3 4 3 GROUP POP 1 !=
+IF
+    PRINT POP 2 FAILED!
+    ;
+END IF
+
+0 1 2 3 GROUP 4 POP SIZE 3 !=
+IF
+    PRINT POP 3 FAILED!
+    ;
+END IF
+
+PRINT if you do not see any failures, POP testing passed
+; ;
+
+PRINT Testing DUP function
+;
+
+-1 1 DUP 1 !=
+IF
+    PRINT DUP 1 FAILED!
+    ;
+END IF
+
+1 !=
+IF
+    PRINT DUP 2 FAILED!
+    ;
+END IF
+
+-1 1 2 3 4 5 5 GROUP DUP 15 !=
+IF
+    PRINT DUP 3 FAILED!
+    ;
+END IF
+
+SIZE 5 !=
+IF
+    PRINT DUP 4 FAILED!
+    ;
+END IF
+
+Print If you do not see any errors, DUP testing passed
+; ;

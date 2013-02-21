@@ -1,6 +1,6 @@
 ## @package Script
 #
-# @brief Package for executable 1D5 scripts.
+# @brief Package for executable 1D5 Script objects.
 #
 # @todo make output stream mutable
 #
@@ -13,33 +13,46 @@ import ControlStructure
 
 from StackFrame import StackFrame
 
+## @brief The language control structures available to users.
+#
+# See ControlStructure for the default list (includes all members of
+# the ControlStructure package).
+#
+_controlStructures = None
+
+## @brief The set of system functinos available to use.
+#
+# See SystemFunction for the default list (includes all members of the
+# SystemFunction package).
+#
+_systemFunction = None
+
+## @brief The map of user function names (str) to Script objects.
+_userFunctions = None
+
+## @brief The output stream for all currently running scripts
+_output = sys.stdout
+
 ## @brief An executable 1D5 Script
 #
 # Script files can be created from srings or from a file. They run by using
-# the execute() function and only need to be passed a 
+# the execute() function. Each script is a single executable unit and can be
+# run independently. Scripts may also be share defined variable scope
+# (called context) and a program stack. Inclusion of these two elements is done
+# at execution time.
+#
+# Scripts do not check the format and content of their input until they are
+# executed. This allows you to define a Script and Scripts it depends on
+# (user defined functions, etc.) in any order and then executing them in
+# dependency order.
+#
 class Script:
     
-    ## @brief The language control structures available to users.
-    #
-    # See @ref ControlStructure for the default list (includes all members of
-    # the ControlStructure package).
-    #
-    _controlStructures = None
-    
-    ## @brief The set of system functinos available to use.
-    #
-    # See @ref SystemFunction for the default list (includes all members of the
-    # SystemFunction package).
-    #
-    _systemFunction = None
-    
-    ## @brief The map of user function names (str) to Script objects.
-    _userFunctions = None
-    
-    ## @brief The output stream for all currently running scripts
-    _output = sys.stdout
-    
     ## @brief Create a new Script from file or string.
+    #
+    # This method creates a Script from either a file or a given input string.
+    # The input is not processed beyond shortening whitespace to the defined
+    # token separator and removing leading and trailing spaces.
     #
     # @param input
     #        The input string that is this script or name of a script file.
@@ -49,14 +62,17 @@ class Script:
     # @todo Need error handling for file not found...
     #
     def __init__(self, input, isFile=False):
+        # get the whole input script and stor it
         if(isFile):
             self._script = file(input).readlines()
         else:
             self._script = re.split(LangDef.ENDLINE_STRING,input)
         
+        # remove comments and strip extra whitespace
         for i in xrange(len(self._script)):
             self._script[i] = re.split(LangDef.COMMENT_STRING,self._script[i])[0]
             if re.match(LangDef.PRINT_STRING,self._script[i]) :
+                # print lines only remove leading spaces and extraneous \n
                 self._script[i] = re.split(LangDef.ENDLINE_STRING,
                                            self._script[i].lstrip())[0]
             else:
@@ -65,6 +81,16 @@ class Script:
                                          self._script[i])
     
     ## @brief Execute this scripts with the given stack and context.
+    #
+    # Both stack and context are optional. If either is not included, then
+    # a new empty stack and/or context is created specifically for this
+    # execution and is not retrievable.
+    #
+    # @param stack
+    #        list[] -> StackFrame, program stack used to pass variables to and
+    #        store return values from functions.
+    # @param context
+    #        dict(str) -> StackFrame, Maps variable names to stored values.
     #
     # @todo Need to print out line errors to sys.stderr
     #
@@ -124,7 +150,10 @@ class Script:
             
             # todo: raise exception, illegal token
     
-    ## @brief Add the current 
+    ## @brief Add the list of currently available user functions
+    #
+    # Once added to the list of currently available functions, the script may
+    # be called by the defined name to 
     #
     # @param name
     #        The name the newly defined function will be called by
@@ -136,6 +165,7 @@ class Script:
 #
 # This automatically loads the default ControlStructure and SystemFunction
 # objects for Scripts removing all 
+#
 def instantiateSystem():
     Script._controlStructures = list()
     Script._controlStructures.append(ControlStructure.IfStructure())
@@ -161,10 +191,12 @@ def instantiateSystem():
         
     Script._userFunctions = dict()
         
-    
+def addSystemFunction(function):
+    pass
+
 ## Get the current output stream for Scripts
 def output():
-    return Script._output
+    return _output
     
 # Go ahead and load the basics
 instantiateSystem()

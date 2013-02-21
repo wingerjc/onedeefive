@@ -1,3 +1,5 @@
+## @package SystemFunction
+# @brief This package contains the standard SystemFunctions usable in 1D5
 
 import re
 import random
@@ -6,14 +8,58 @@ import Script
 
 from StackFrame import StackFrame
 
-
+## The base class for all SystemFunctions
+#
+# Each SystemFunction must have a matchString and an execute method.
+# The system is designed such that it is easy to extend to cover more
+# functionality than the base system. checkStackHeight is provided for
+# developer convenience and error consistency.
+#
 class SystemFunction:
+    ## Execute the function.
+    #
+    # Uses the passed stack and context. Since multiple function names can be
+    # matched by a single pattern (eg. MIN and MAX), this allows them to be
+    # differentiated and logically grouped into the same object.
+    #
+    # @param cmd
+    #        The string command that was used to invoke this function.
+    # @param stack
+    #        The current program stack when this function is invoked.
+    # @param context
+    #        The dict that matches string names to stored variable values.
+    #
     def execute(self, cmd, stack, context):
         pass
     
+    ## The pattern that matches all the function names this object covers.
+    #
+    # Script holds functions in a list and tests them in order. This prevents
+    # overriding the standard system functions. More generally, if multiple
+    # SystemFunction objects matchString() strings match a given command string
+    # the first one added to the Script module's list is executed.
+    #
+    # @return A regex pattern string that matches commands covered by this
+    #         object
+    #
     def matchString(self):
         return ""
     
+    ## Make sure that the stack is at least a certain size.
+    #
+    # Provided for developer convenience and error consistency. It should
+    # generally be used once the number of parameters for an execution step
+    # is known and before popping the items off the stack
+    #
+    # @param stack
+    #        The current program stack
+    # @param minHeight
+    #        The lowest allowable stack height before an exception should be
+    #        thrown
+    # @param command
+    #        The command that requires the given height. Used in error message
+    #        construction.
+    #
     def checkStackHeight(self, stack, minHeight, command):
         if len(stack) < minHeight :
             raise IndexError("ERROR Command " + command + " requires at least "
@@ -21,7 +67,8 @@ class SystemFunction:
                              str(len(stack)) + " found")
 
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Functions that pertain to printing
 class PrintFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         if re.match(LangDef.ENDL_STRING,cmd):
@@ -37,19 +84,23 @@ class PrintFunction(SystemFunction):
         return LangDef.OUTPUT_STRING;
 
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Function that reads integers
 class IntegerFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         stack.append(StackFrame(cmd + ': ' + cmd,int(cmd)))
     
     def matchString(self):
         return LangDef.INTEGER_STRING
-# +++++++++++++++++++++++++++
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Functions for rolling dice
 class DiceFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         dice = 0
         sides = 0
         
+        # figure out how many dice and the type
         if(re.match(LangDef.DICEROLL_STRING,cmd)):
             var = re.split(LangDef.DIE_SEPARATOR,cmd)
             dice = int(var[0])
@@ -59,12 +110,14 @@ class DiceFunction(SystemFunction):
             sides = stack.pop().value()
             dice = stack.pop().value()
         
+        # check limits
         if dice < 0 :
             raise RuntimeError('ERROR cannot roll less than 0 dice')
         
         if sides < 1 :
             raise RuntimeError('ERROR dice must have at least one side')
         
+        # execute the rolls
         rolls = list()
         expl = '('
         for i in xrange(dice):
@@ -83,7 +136,8 @@ class DiceFunction(SystemFunction):
     def matchString(self):
         return LangDef.ROLL_STRING
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Mathematical comparison functions
 class ComparisonFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         self.checkStackHeight(stack,2,cmd)
@@ -111,7 +165,8 @@ class ComparisonFunction(SystemFunction):
     def matchString(self):
         return LangDef.COMPARE_STRING
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Simple math functions
 class MathFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         self.checkStackHeight(stack, 2, cmd)
@@ -138,10 +193,12 @@ class MathFunction(SystemFunction):
     def matchString(self):
         return LangDef.MATH_STRING
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Basic boolean operators
 class BooleanFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         
+        # handle NOT because it only has one argument
         if re.match(LangDef.NOT_STRING,cmd):
             self.checkStackHeight(stack,1,cmd)
             
@@ -152,6 +209,7 @@ class BooleanFunction(SystemFunction):
                          cmd + ':' + str(ret), ret))            
             return
         
+        # handle AND, OR, and XOR
         self.checkStackHeight(stack,2,cmd)
         
         arg2 = stack.pop().value()
@@ -170,7 +228,8 @@ class BooleanFunction(SystemFunction):
     def matchString(self):
         return LangDef.BOOLEAN_STRING
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Combine the last n stack items into a single list
 class GroupFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         self.checkStackHeight(stack,1,cmd)
@@ -213,7 +272,8 @@ class GroupFunction(SystemFunction):
     def matchString(self):
         return LangDef.GROUP_STRING
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Function for determining the size of a list
 class SizeFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         self.checkStackHeight(stack, 1, cmd)
@@ -229,7 +289,8 @@ class SizeFunction(SystemFunction):
     def matchString(self):
         return LangDef.SIZE_STRING
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Function for gettin the n lowest/highest values from a list
 class MinMaxFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         self.checkStackHeight(stack, 2, cmd)
@@ -237,14 +298,17 @@ class MinMaxFunction(SystemFunction):
         count = stack.pop().value()
         vals = stack.pop()
         
+        # can't return a list with non-positive length, base list.
         if count <= 0 :
             stack.append(StackFrame('0 ' + cmd,rolls=[0]))
             return
         
+        # can't take more than 1 item from a single value
         if not vals.isRoll() :
             stack.append(StackFrame(str(vals.value()) + ' ' + cmd,vals.value()))
             return
         
+        # find the start and end of the loop indices
         sort = sorted(vals.rolls()) 
         if re.match(LangDef.MAX_STRING,cmd) :
             start = -1
@@ -257,16 +321,18 @@ class MinMaxFunction(SystemFunction):
             step = 1
             last = len(sort)
         
-        retVals = list()
+        # get the data
+        retVals = sort[start:end:step]
+        
+        # iterate in the desired direction over the sorted list to create
+        # an explantion
         descr = '('
         first = True
-        
         for n in xrange(start,end,step) :
             if first :
                 first = False
             else :
                 descr += ', '
-            retVals.append(sort[n])
             descr += str(sort[n])
             
         if len(retVals) == 0 :
@@ -290,7 +356,8 @@ class MinMaxFunction(SystemFunction):
     def matchString(self):
         return LangDef.MIN_STRING + '|' + LangDef.MAX_STRING
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Functions for assigning variables
 class AssignFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         self.checkStackHeight(stack, 2, cmd)
@@ -320,7 +387,8 @@ class AssignFunction(SystemFunction):
     def matchString(self):
         return LangDef.ASSIGN_STRING + '|' + LangDef.SHOVE_STRING
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Functions that just do stack operations
 class StackFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         if re.match(LangDef.POP_STRING,cmd) :
@@ -333,7 +401,8 @@ class StackFunction(SystemFunction):
     def matchString(self):
         return LangDef.STACK_STRING
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Function to duplicate the top item on the stack.
 class DupFunction(SystemFunction):
     def execute(self, cmd, stack, context):
         self.checkStackHeight(stack, 1, cmd)
@@ -349,13 +418,14 @@ class DupFunction(SystemFunction):
     def matchString(self):
         return LangDef.DUP_STRING
 
-# +++++++++++++++++++++++++++
-class BlankFunction(SystemFunction):
-    def execute(self, cmd, stack, context):
-        pass
-    
-    def matchString(self):
-        pass
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# left as template for new SystemFunctions
+#class BlankFunction(SystemFunction):
+#    def execute(self, cmd, stack, context):
+#        pass
+#    
+#    def matchString(self):
+#        pass
 
-# +++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

@@ -2,8 +2,6 @@
 #
 # @brief Package for executable 1D5 Script objects.
 #
-# @todo make output stream mutable
-#
 import re
 import sys
 
@@ -17,6 +15,7 @@ from StackFrame import StackFrame
 #
 # See ControlStructure for the default list (includes all members of
 # the ControlStructure package).
+# Treat as private to module.
 #
 _controlStructures = None
 
@@ -24,13 +23,16 @@ _controlStructures = None
 #
 # See SystemFunction for the default list (includes all members of the
 # SystemFunction package).
+# Treat as private to module.
 #
 _systemFunction = None
 
 ## @brief The map of user function names (str) to Script objects.
+# Treat as private to module.
 _userFunctions = None
 
 ## @brief The output stream for all currently running scripts
+# Treat as private to module.
 _output = sys.stdout
 
 ## @brief An executable 1D5 Script
@@ -59,12 +61,17 @@ class Script:
     # @param isFile
     #        Whether input should be treated as a file name
     #
-    # @todo Need error handling for file not found...
-    #
     def __init__(self, input, isFile=False):
         # get the whole input script and stor it
         if(isFile):
-            self._script = file(input).readlines()
+            try:
+                self._script = file(input).readlines()
+            except Exception as e :
+                sys.stderr.write('----------------ERROR---------------\n')
+                sys.stderr.write('Could not open script file: ' + input + '\n')
+                sys.stderr.write('Exception message:\n')
+                sys.stderr.write(str(e) + '\n')
+                self._script = ['']
         else:
             self._script = re.split(LangDef.ENDLINE_STRING,input)
         
@@ -92,8 +99,6 @@ class Script:
     # @param context
     #        dict(str) -> StackFrame, Maps variable names to stored values.
     #
-    # @todo Need to print out line errors to sys.stderr
-    #
     def execute(self,stack=[],context=dict()):
         skip = -1;
         for i in xrange(len(self._script)):
@@ -102,7 +107,7 @@ class Script:
                 processed = False
                 
                 # try to interpret as a control structure
-                for struct in Script._controlStructures:
+                for struct in _controlStructures:
                     if not processed and re.match(struct.startPattern(),line):
                         processed = True
                         skip = struct.scriptEnd(self._script, i)
@@ -116,12 +121,19 @@ class Script:
                                        stack,
                                        context)
                 # not a control structure, must be a list of tokens (functions)
-                if not processed :
-                    self._processTokens(i, stack, context)
+                try:
+                    if not processed :
+                        self._processTokens(i, stack, context)
+                except Exception as e :
+                    sys.stderr.write('----------------ERROR---------------\n')
+                    sys.stderr.write('Sorry, I could not process the line:\n')
+                    sys.stderr.write(line + '\n\n')
+                    sys.stderr.write('I\'m trying to continue with the next ')
+                    sys.stderr.write('line but script output may be garbage.\n')
+                    sys.stderr.write('The specific error was:\n')
+                    sys.stderr.write(str(e) + '\n\n')
     
     ## @brief Process individual tokens as functions on a script line.
-    #
-    # @todo raise exception for token that is not recognized
     #
     def _processTokens(self, lineNumber, stack, context):
         
@@ -131,14 +143,15 @@ class Script:
             processed = False
             
             # try to process it as a regular system function
-            for func in Script._systemFunctions :
+            for func in _systemFunctions :
                 if not processed and re.match(func.matchString(), token):
-                    processed = True
                     func.execute(token, stack, context)
+                    processed = True
             
             # try to process it as a user defined function
-            if not processed and token in Script._userFunctions:
-                Script._userFunctions[token].execute(stack, context)
+            if not processed and token in _userFunctions:
+                _userFunctions[token].execute(stack, context)
+                processed = True
             
             # try to process it as a variable
             if not processed and re.match(LangDef.VARIABLE_STRING, token) :
@@ -148,18 +161,21 @@ class Script:
                     stack.append(StackFrame(token,0))
                 processed = True
             
-            # todo: raise exception, illegal token
+            if not processed and len(token) > 0 :
+                raise RuntimeError('ERROR Could not understand command: ' 
+                                   + token)
+            
     
     ## @brief Add the list of currently available user functions
     #
     # Once added to the list of currently available functions, the script may
-    # be called by the defined name to 
+    # be then be called by the given name in any script object.
     #
     # @param name
     #        The name the newly defined function will be called by
     #
     def makeFunction(self, name):
-        Script._userFunctions[name] = self
+        _userFunctions[name] = self
     
 ## Instantiate all required class level variables for Scripts.
 #
@@ -167,32 +183,67 @@ class Script:
 # objects for Scripts removing all 
 #
 def instantiateSystem():
-    Script._controlStructures = list()
-    Script._controlStructures.append(ControlStructure.IfStructure())
-    Script._controlStructures.append(ControlStructure.LoopStructure())
-    Script._controlStructures.append(ControlStructure.IncludeStructure())
-    Script._controlStructures.append(ControlStructure.PrintStructure())
-    Script._controlStructures.append(ControlStructure.FunctionStructure())
+    global _controlStructures
+    global _systemFunctions
+    global _userFunctions
+    _controlStructures = list()
+    _controlStructures.append(ControlStructure.IfStructure())
+    _controlStructures.append(ControlStructure.LoopStructure())
+    _controlStructures.append(ControlStructure.IncludeStructure())
+    _controlStructures.append(ControlStructure.PrintStructure())
+    _controlStructures.append(ControlStructure.FunctionStructure())
     #Script._controlStructures.append()
         
-    Script._systemFunctions = list()
-    Script._systemFunctions.append(SystemFunction.IntegerFunction())
-    Script._systemFunctions.append(SystemFunction.PrintFunction())
-    Script._systemFunctions.append(SystemFunction.DiceFunction())
-    Script._systemFunctions.append(SystemFunction.ComparisonFunction())
-    Script._systemFunctions.append(SystemFunction.MathFunction())
-    Script._systemFunctions.append(SystemFunction.BooleanFunction())
-    Script._systemFunctions.append(SystemFunction.GroupFunction())
-    Script._systemFunctions.append(SystemFunction.SizeFunction())
-    Script._systemFunctions.append(SystemFunction.MinMaxFunction())
-    Script._systemFunctions.append(SystemFunction.AssignFunction())
-    Script._systemFunctions.append(SystemFunction.StackFunction())
-    Script._systemFunctions.append(SystemFunction.DupFunction())
+    _systemFunctions = list()
+    _systemFunctions.append(SystemFunction.IntegerFunction())
+    _systemFunctions.append(SystemFunction.PrintFunction())
+    _systemFunctions.append(SystemFunction.DiceFunction())
+    _systemFunctions.append(SystemFunction.ComparisonFunction())
+    _systemFunctions.append(SystemFunction.MathFunction())
+    _systemFunctions.append(SystemFunction.BooleanFunction())
+    _systemFunctions.append(SystemFunction.GroupFunction())
+    _systemFunctions.append(SystemFunction.SizeFunction())
+    _systemFunctions.append(SystemFunction.MinMaxFunction())
+    _systemFunctions.append(SystemFunction.AssignFunction())
+    _systemFunctions.append(SystemFunction.StackFunction())
+    _systemFunctions.append(SystemFunction.DupFunction())
         
-    Script._userFunctions = dict()
-        
+    _userFunctions = dict()
+
+## @brief Add a new SystemFunction to the global list.
+#
+# Lets developers add their own SystemFunctions to the list of available
+# SystemFunctions that are automatically included. Useful for extensibility.
+#
+# @param function
+#        A SystemFunction object that can be executed.
+#
 def addSystemFunction(function):
-    pass
+    if not function is None:
+        _systemFunctions.append(function)
+
+## Add a new ControlStructure to the global list.
+#
+# Lets developers add their own ControlStructure to the list of available
+# SystemFunctions that are automatically included. Useful for extensibility.
+#
+# @param struct
+#        A ControlStructure object that can be executed.
+#
+def addControlStructure(struct):
+    if not struct is None:
+        _controlStructures.append(struct)
+
+## Set the standard script output stream.
+#
+# @param newOut
+#        An output stream that can be written to by scripts. Must have similar
+#        interface to sys.stdout.
+#
+def setOutput(newOut):
+    global _output
+    if not newOut is None:
+        _output = newOut
 
 ## Get the current output stream for Scripts
 def output():

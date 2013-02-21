@@ -13,7 +13,7 @@ import re
 
 import LangDef
 
-from Script import Script
+from Script import Script,setOutput
 
 
 ## @brief Pattern to match console command exit
@@ -30,11 +30,47 @@ ENDREAD_STRING = '^[ \t]*(?i)end script(?i)[ \t]*$'
 # Runs 1D5 and reads arguments passed via command line (if any). These arguments
 # allow you to set an input script file, an output text file, or ask for the
 # cli help string to be printed.
-# 
-# @todo Read and change i/o sources based from cli arguments
 #
 def main():
-    consoleMode()
+    VERSION = '1.0.0/0213'
+    if len(sys.argv) == 1 :
+        consoleMode()
+    else :
+        outFile = None
+        inFile = None
+        for i in xrange(1,len(sys.argv)) :
+            if sys.argv[i] == '-i' :
+                inFile = Script(sys.argv[i+1],True)
+            elif sys.argv[i] == '-o' :
+                try:
+                    outFile = open(sys.argv[i+1],'w')
+                except Exception as e :
+                    sys.stderr.write('ERROR I cannot open: ' + sys.argv[i+1] +
+                                     '\nThe error was:\n')
+                    sys.stderr.write(str(e) + '\n')
+                    return
+                
+            elif sys.argv[i] == '--help' :
+                sys.stdout.write(
+                    "1D5 Version: " + VERSION + "\n" +
+                    "The scriptable dice roller.\n"+
+                    "Usage: python onedeefive.py [options]\n\n"+
+                    "Options:\n"+
+                    "-i <file name>\n"+
+                    "\tRead input from the specified file.\n\n"+
+                    "-o <file name>\n"+
+                    "\twrite output to the specified file.\n\n"+
+                    "--help\n"+
+                    "\tPrint this message.\n"
+                    )
+        
+        if not outFile is None :
+            setOutput(outFile)
+        
+        if inFile is None :
+            consoleMode()
+        else :
+            inFile.execute()
     
 ## @brief Run 1D5 as an interactive console.
 #

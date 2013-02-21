@@ -5,7 +5,7 @@ It also allows you to write scripts to do some
 complicated math.
 
 The program is currently written in Java and 
-documantation is in LaTeX.
+documentation is in LaTeX.
 
 A compiled version should be hosted at:
 www.barrettsprivateers.com/pathfinder/onedeefive

@@ -150,7 +150,7 @@ class Script:
             
             # try to process it as a user defined function
             if not processed and token in _userFunctions:
-                _userFunctions[token].execute(stack, context)
+                _userFunctions[token].execute(stack)
                 processed = True
             
             # try to process it as a variable

@@ -204,7 +204,7 @@ INCLUDE_STRING = "^(?i)include(?i)" + TOKEN_SEPARATOR + "[\\.a-zA-Z0-9_/:]+$"
 
 # +++++++++++++++   PRINT STATEMENT DEFINITIONS +++++++++++++++++++++
 ## @brief Pattern string for the print statement
-PRINT_STRING = "^(?i)print(?i)( .+)?$"
+PRINT_STRING = "^[ \t]*(?i)print(?i)( .+)?$"
 
 ## @brief Print header string length.
 #

@@ -47,9 +47,9 @@ END FUN
 # End random ordering script
 
 # save tables
-0 0 1 1 1 2 2 2 3 3 3 4 4 4 5 5 5 6 6 6 20 GROUP _class_will_saves PUT
 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 20 GROUP _class_fort_saves PUT
-0 0 1 1 1 2 2 2 3 3 3 4 4 4 5 5 5 6 6 6 20 GROUP _class_ref_saves PUT
+0 0 1 1 1 2 2 2 3 3 3 4 4 4 5  5  5  6  6  6 20 GROUP _class_ref_saves PUT
+0 0 1 1 1 2 2 2 3 3 3 4 4 4 5  5  5  6  6  6 20 GROUP _class_will_saves PUT
  
 # bab tables
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 20 GROUP _class_bab_first PUT
@@ -65,6 +65,9 @@ END FUN
 4 _lvl_1_skill_mult PUT
 
 # spells
+
+# spells per day
+# spells known
 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp0 PUT
 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp1 PUT
 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp2 PUT
@@ -75,6 +78,18 @@ END FUN
 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp7 PUT
 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp8 PUT
 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp9 PUT
+
+# spells known
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp0 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp1 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp2 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp3 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp4 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp5 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp6 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp7 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp8 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp9 PUT
 
 FUN @bonus_mod
     _cha_mod put

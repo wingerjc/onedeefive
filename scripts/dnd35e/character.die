@@ -75,10 +75,11 @@ _class_ref_saves _level MIN 1 MAX _dex_mod + _ref_save ASSIGN
 # again, fails to count skill points gained from higher INT after attribute inc
 _class_skill _int_mod + 0 2 GROUP 1 MAX _lvl_1_skill_mult * # lvl1 skills
 _class_skill _int_mod + 0 2 GROUP 1 MAX _level 1 - * # skills after lvl1
-+ _skill_points PUT
+_racial_skills + _skill_points PUT
+
 
 # the number of feats
-_level 3 / 1 + _feats PUT
+_level 3 / 1 + _racial_feats + _feats PUT
 _class_feats _level MIN 1 MAX _bonus_class_feats PUT
 
 # BAB Base attack bonus
@@ -90,6 +91,7 @@ _class_bab_fourth _level MIN 1 MAX _bab_fourth PUT
 # spells
 _int_mod _wis_mod _cha_mod @bonus_mod _bonus_mod PUT
 _int _wis _cha @bonus_mod _bonus_stat PUT
+
 # bonus spells PHB P. 8
 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4 5 17 group _bsp1 put
 0 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4 17 group _bsp2 put
@@ -153,7 +155,39 @@ _cksp7 _level MIN 1 MAX _ksp7 PUT
 _cksp8 _level MIN 1 MAX _ksp8 PUT
 _cksp9 _level MIN 1 MAX _ksp9 PUT
 
-# Display results
+# calcualte encumberance
+
+# heavy loads table
+10 20 30 40 50 60 70 80 90 100 115 130 150 175 200 230
+260 300 350 400 460 520 600 700 800 920 1040 1200 1400
+29 GROUP _load_heavy PUT
+
+# caclulate values from the table.
+_load_heavy _str MIN 1 MAX _enc_heavy PUT
+_enc_heavy 2 * 3 / _enc_med PUT
+_enc_heavy 3 / _enc_light PUT
+
+
+# define base land speed
+_racial_speed _speed PUT
+
+# extra languages
+_int_mod 0 2 GROUP 1 MAX _languages PUT
+
+# make changes based on race size
+_racial_size 1 =
+IF # small sized
+    _ac 1 + _ac PUT
+    _flat_footed 1 + _flat_footed PUT
+    _enc_light 3 * 4 / _enc_light PUT
+    _enc_med   3 * 4 / _enc_med   PUT
+    _enc_heavy 3 * 4 / _enc_heavy PUT
+END IF
+
+# Display results ==================================================
+; ;
+PRINT === CHARACTER GENERATED ===
+;
 PRINT LEVEL:
 _level .
 PRINT  HP:
@@ -219,6 +253,7 @@ PRINT Class Feats:
 _bonus_class_feats .
 ; ;
 
+# print spell count as 3 column number (space padded)
 FUN @print_spell
     _val ASSIGN 0 <
     IF
@@ -239,11 +274,27 @@ PRINT spell lvl:  0  1  2  3  4  5  6  7  8  9
 PRINT
 PRINT spells:   
 _sp0 @print_spell _sp1 @print_spell _sp2 @print_spell
-_sp3 @print_spell _sp4 @print_spell _sp5 @print_spell 
+_sp3 @print_spell _sp4 @print_spell _sp5 @print_spell
 _sp6 @print_spell _sp7 @print_spell _sp8 @print_spell _sp9 @print_spell ;
 PRINT Known:    
 _ksp0 @print_spell _ksp1 @print_spell _ksp2 @print_spell
 _ksp3 @print_spell _ksp4 @print_spell _ksp5 @print_spell 
 _ksp6 @print_spell _ksp7 @print_spell _ksp8 @print_spell _ksp9 @print_spell ;
+;
 
+PRINT Extra languages:
+_languages . ;
 
+PRINT Light load:
+_enc_light .
+PRINT  lb.  Medium Load:
+_enc_med .
+PRINT  lb.  Heavy Load:
+_enc_heavy .
+PRINT  lb.
+;
+
+PRINT Base Speed:
+_speed .
+PRINT  Ft.
+; ; 

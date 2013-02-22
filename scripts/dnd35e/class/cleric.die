@@ -24,7 +24,7 @@ FUN @set_pick
     _set _choice MIN 1 MAX
 END FUN
 
-10 _hit_die PUT
+8 _hit_die PUT
 
 # deterministic assigment for order of attribute assignment
 3 _con_index PUT
@@ -63,7 +63,9 @@ END FUN
 2 _class_skill PUT
 4 _lvl_1_skill_mult PUT
 
-# spells?
+# spells
+
+# spells per day
  3  4  4  5  5  5  6  6  6  6  6  6  6  6  6  6 6 6 6 6 20 group _csp0 PUT
  1  2  2  3  3  3  4  4  4  4  5  5  5  5  5  5 5 5 5 5 20 group _csp1 PUT
 -9 -9  1  2  2  3  3  3  4  4  4  4  5  5  5  5 5 5 5 5 20 group _csp2 PUT
@@ -74,6 +76,18 @@ END FUN
 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9  1  2  2  3 3 3 4 4 20 group _csp7 PUT
 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9  1  2 2 3 3 4 20 group _csp8 PUT
 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 1 2 3 4 20 group _csp9 PUT
+
+# spells known
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp0 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp1 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp2 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp3 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp4 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp5 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp6 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp7 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp8 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp9 PUT
 
 FUN @bonus_mod
     _cha_mod put

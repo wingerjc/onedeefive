@@ -27,12 +27,12 @@ END FUN
 10 _hit_die PUT
 
 # deterministic assigment for order of attribute assignment
-1 _con_index PUT
+3 _con_index PUT
 2 _str_index PUT
-3 _dex_index PUT
+1 _dex_index PUT
 4 _wis_index PUT
-5 _cha_index PUT
-6 _int_index PUT
+6 _cha_index PUT
+5 _int_index PUT
 
 # alternate random ordering of attributes:
 #1 2 3 4 5 6 6 GROUP
@@ -46,34 +46,46 @@ END FUN
 # End random ordering script
 
 # save tables
-# 20 GROUP _class_will_saves PUT
-# 20 GROUP _class_fort_saves PUT
-# 20 GROUP _class_ref_saves PUT
+2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 20 GROUP _class_fort_saves PUT
+2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 20 GROUP _class_ref_saves PUT
+2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 20 GROUP _class_will_saves PUT
  
 # bab tables
-# 20 GROUP _class_bab_first PUT
-# 20 GROUP _class_bab_second PUT
-# 20 GROUP _class_bab_third PUT
-# 20 GROUP _class_bab_fourth PUT
+0 1 2 3 3 4 5 6 6 7 8 9 9 10 11 12 12 13 14 15 20 GROUP _class_bab_first PUT
+0 0 0 0 0 0 0 1 1 2 3 4 4  5  6  7  7  8  9 10 20 GROUP _class_bab_second PUT
+0 0 0 0 0 0 0 0 0 0 0 0 0  0  1  2  2  3  4  5 20 GROUP _class_bab_third PUT
+0 0 0 0 0 0 0 0 0 0 0 0 0  0  0  0  0  0  0  0 20 GROUP _class_bab_fourth PUT
  
 # feat count per level
-# 20 GROUP _class_feats PUT
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 20 GROUP _class_feats PUT
  
 # skill points
-2 _class_skill PUT
+4 _class_skill PUT
 4 _lvl_1_skill_mult PUT
 
-# spells?
-# 20 group _csp0 PUT
-# 20 group _csp1 PUT
-# 20 group _csp2 PUT
-# 20 group _csp3 PUT
-# 20 group _csp4 PUT
-# 20 group _csp5 PUT
-# 20 group _csp6 PUT
-# 20 group _csp7 PUT
-# 20 group _csp8 PUT
-# 20 group _csp9 PUT
+# spells per day
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp0 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp1 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp2 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp3 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp4 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp5 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp6 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp7 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp8 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _csp9 PUT
+
+# spells known
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp0 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp1 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp2 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp3 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp4 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp5 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp6 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp7 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp8 PUT
+-9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 -9 20 group _cksp9 PUT
 
 FUN @bonus_mod
     _cha_mod put
@@ -85,5 +97,6 @@ FUN @bonus_mod
     #_int_mod
     #_wis_mod
     #_cha_mod
+    0
 END FUN
 

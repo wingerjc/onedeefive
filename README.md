@@ -8,4 +8,4 @@ The program is currently written in both Java and Python.
 User documentation is in LaTeX.
 
 A compiled version should be hosted at:
-www.barrettsprivateers.com/pathfinder/onedeefive
+www.barrettsprivateers.net/home/pathfinder/onedeefive
